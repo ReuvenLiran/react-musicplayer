@@ -14,8 +14,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchSongs: () => {
       dispatch(fetchSongs()).then((response) => {
-            !response.error ? dispatch(fetchSongsSuccess(response.payload)) : dispatch(fetchSongsFailure(response.payload));
-          });
+           // !response.error ? dispatch(fetchSongsSuccess(response.payload)) : dispatch(fetchSongsFailure(response.payload));
+           dispatch(fetchSongsSuccess(response.payload));
+         });
     }
   }
 }

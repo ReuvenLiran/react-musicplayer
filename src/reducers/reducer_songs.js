@@ -16,10 +16,10 @@ import {
 export default function(state = INITIAL_STATE, action) {
   let error;
   switch(action.type) {
-
-  case FETCH_SONGS:// start fetching songs and set loading = true
+   
+  case FETCH_SONGS: // start fetching songs and set loading = true
   	return { ...state, songsList: {songs:[], error: null, loading: true} }; 
-  case FETCH_SONGS_SUCCESS:// return list of songs and make loading = false
+  case FETCH_SONGS_SUCCESS: // return list of songs and make loading = false
     return { ...state, songsList: {songs: action.payload.data, error:null, loading: false} };
   case FETCH_SONGS_FAILURE:// return error and make loading = false
     error = action.payload.data || {message: action.payload.message};//2nd one is network or server down errors

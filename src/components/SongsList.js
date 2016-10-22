@@ -19,7 +19,7 @@ class SongsList extends Component {
   }
 
   render() {
-    const { songs, loading, error } = this.props.songsList;
+    const { songs, loading, error } = this.props.songsList; 
 
     if(loading) {
       return <div className="container"><h1>Songs</h1><h3>Loading...</h3></div>      
