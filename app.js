@@ -4,13 +4,31 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
+//var mongoose = require('mongoose');
 var router = express.Router();
 var jwt    = require('jsonwebtoken'); 
+
+var monogoLab =   'mongodb://admin:admin@ds013330.mlab.com:13330/react_nodejs';
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
+var co = require('co');
+/*
+MongoClient.connect(process.env.MONGOLAB_URI || monogoLab, function(err, db) {
+  assert.equal(null, err);
+  db = DB;
+  console.log(db);
+  console.log("Connected correctly to DB.");
+  //db.close();
+});*/
+co(function*() {
+global.db = yield MongoClient.connect(process.env.MONGOLAB_URI || monogoLab);
+console.log("Connected correctly to server");
+});
 
 //routes
 //var users   = require('./routes/users'); 
 var songs = require('./routes/songs');
+//var fileUpdater = require('./routes/fileUpdater');
 
 var app = express();
 
@@ -59,10 +77,13 @@ app.use(function(req, res, next) {
 });
 
 app.use('/api/', songs);
+//app.use('/api/', fileUpdater);
+
 //app.use('/api/', users);
 app.use(express.static(staticPath));
 app.use('/', express.static(staticPath));
 app.use('/songs/*', express.static(staticPath));
+
 //app.use('/new/*', express.static(staticPath));
 //app.use('/validateEmail/*', express.static(staticPath));
 
@@ -95,11 +116,13 @@ app.use(function(err, req, res, next) {
   }
 });
 
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/songs');
+
+/*
+mongoose.connect(process.env.MONGOLAB_URI || monogoLab);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   console.log('DB connected!');
-});
+});*/
 
 module.exports = app;

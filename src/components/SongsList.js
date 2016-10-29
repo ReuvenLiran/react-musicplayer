@@ -1,38 +1,156 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
+import ReactMusicPlayer from '../react-music-player/ReactMusicPlayer';
+// import SplitPane from 'react-split-pane';
+
+     const listStyle = {
+      //color: 'blue',
+      width: '60%',
+      //position: 'absolute',
+      float:'left',
+     // backgroundColor: 'blue',
+      };
+      
+    const playerStyle = {
+     // color: 'blue',
+      //width: '60%',
+      //position: 'absolute',
+      float:'right',
+     // backgroundColor: 'blue',
+      };
+    const durationStyle = {
+          float:'right',
+          marginRigth:'20px',
+    }
+    const artistStyle = {
+          float:'left',
+     }
+    const listItemStyle = {
+      width: '100%',
+      listStyleType:'none',
+      display: 'inline-block',
+    }
+
+    const trackNameStyle = {
+     }
+
+//==========================================
 
 class SongsList extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      visible: this.props.visibileFields
+    };
+  }
+
   componentWillMount() {
     this.props.fetchSongs();
+    //this.handleClick = this.handleClick.bind(this);
+  }
+
+ handleClick(songs, song){
+    alert(song.track_name);
+    this.renderPlayer(songs, song);
   }
  
-  renderSongs(songs) {
+ secondsToMinutes(s) {
+    //var h = Math.floor(s/3600); //Get whole hours
+    //s -= h*3600;
+    var m = Math.floor(s/60); //Get remaining minutes
+    s -= m*60;
+    return (m < 10 ? '0'+m : m)+":"+(s < 10 ? '0'+s : s); //zero padding on minutes and seconds
+}
+
+ renderPlayer(songs, song) {
+   
+   var empty;
+   let entries = songs.entries( );
+   for (let entry of entries) {
+    console.log("SONGS" + entry);
+    empty = entry;
+   }
+/*
+   if (song.length == 0) {
+     song = songs[0];
+   }
+  */  
+    if(empty) {
+
+    alert(song.track_name);
+      return ( <ReactMusicPlayer songs={songs} song={song} /> );
+    } else {
+      return <div className="container"><h1>Songs</h1><h3>Loading...</h3></div>      
+    }
+  //   <Link style={{color:'black'}} to={"songs/" + song.file}>
+
+ }
+
+     
+ renderSongs(songs) {
     return songs.map((song) => {
-      return (
-        <li className="list-group-item" key={song._id}>
-          <Link style={{color:'black'}} to={"songs/" + song._id}>
-            <h3 className="list-group-item-heading">{song.title}</h3>
-          </Link>
-        </li>
+        return (
+          <li style={listItemStyle}  onClick={() => { this.handleClick(songs, song) }} className="list-group-item" key={song.file}>
+            <h3 style={trackNameStyle} className="list-group-item-heading">{song.track_name}</h3>
+            <span style={artistStyle}>{song.artist_name} </span>
+            <span style={durationStyle}>{this.secondsToMinutes(song.track_length)} </span>
+          </li>
+
       );
     });
   }
 
   render() {
     const { songs, loading, error } = this.props.songsList; 
-
+    
     if(loading) {
       return <div className="container"><h1>Songs</h1><h3>Loading...</h3></div>      
     } else if(error) {
       return <div className="alert alert-danger">Error: {error.message}</div>
     }
-
+ 
     return (
       <div className="container">
         <h1>Songs</h1>
-        <ul className="list-group">
-          {this.renderSongs(songs)}
+        <ul className="list-group" style={listStyle}>
+        {this.renderSongs(songs)}
+        
+          <li styles="list-style:none; display: inline-block;" className="list-group-item" key="1">
+            <h3 className="list-group-item-heading">wwwwwwwwwww</h3>
+            <div> 
+            <span>wwwwwwwwwww </span>
+            <span>wwww</span>
+            </div> 
+         </li>
+           <li styles="list-style:none; display: inline-block;" className="list-group-item" key="2">
+            <h3 className="list-group-item-heading">wwwwwwwwwww</h3>
+            <div> 
+            <span>wwwwwwwwwww </span>
+            <span>wwww</span>
+            </div> 
+         </li>
+          <li styles="list-style:none; display: inline-block;" className="list-group-item" key="3">
+            <h3 className="list-group-item-heading">wwwwwwwwwww</h3>
+            <div> 
+            <span>wwwwwwwwwww </span>
+            <span>wwww</span>
+            </div> 
+         </li>
+      <li styles="list-style:none; display: inline-block;" className="list-group-item" key="4">
+            <h3 className="list-group-item-heading">wwwwwwwwwww</h3>
+            <div> 
+            <span>wwwwwwwwwww </span>
+            <span>wwww</span>
+            </div> 
+         </li>
         </ul>
+        
+        <div style={playerStyle}>
+        {this.renderPlayer(songs, songs[0])}
+        </div>
+
       </div>
     );
   }

@@ -3,6 +3,9 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var timestamps = require('mongoose-timestamp');
 var expressJwt = require('express-jwt');
+var assert = require('assert');
+var   co = require('co');
+
 
 var postSchema = mongoose.Schema({
   title: String,
@@ -13,10 +16,58 @@ var postSchema = mongoose.Schema({
   authorId: String
 });
 
+
+
 postSchema.plugin(timestamps);
 
 var Post = mongoose.model('Post', postSchema);
 
+router.get('/songs', function(req, res, next){
+    var fileUpdater = require('../routes/fileUpdater');
+    var songs;
+
+    fileUpdater.then(promisedResult => {
+
+      console.log('api///fileUpdate');
+      /*
+      co(function*() {
+
+        console.log(songs);
+        var r = yield global.db.collection('songs').insertMany(promisedResult.success);
+        assert.equal(resJson.success.length, r.insertedCount);
+
+        // console.log(db);
+      }).catch(function(err) {
+
+        console.log(err.stack);
+      });
+      */
+      co(function*() {
+        console.log('select');
+        songs = yield global.db.collection('songs').find().toArray();
+        
+        //global.db.close();
+        res.json(songs);
+        console.log(songs);
+
+     }).catch(function(err) {
+
+        console.log(err.stack);
+      });
+      
+      }
+  );
+});
+   /*
+    co(function*() {
+    
+      songs = yield global.db.collection('songs').find().toArray();
+    }).catch(function(err) {
+      
+      console.log(err.stack);
+    });
+*/
+/*
 router.get('/songs', function(req, res, next) {
  
   Post
@@ -38,13 +89,21 @@ router.get('/songs', function(req, res, next) {
           message: 'Could not retrieve posts'
         });
       }
-      res.json([{_id:'1', title:'aaaa'}, {_id:'2', title:'bbbb'}]);
-    }); 
+     // res.json([{_id:'1', title:'aaaa'}, {_id:'2', title:'bbbb'}]);
+     res.json([{ url: 'lost_on_you.mp3',
+                 cover: 'http://www.nossoarmario.com/blog/wp-content/uploads/2015/01/redfoo.jpg',
+                 artist: {
+                          name: 'LP',
+                          song: 'Lost on you'
+               }
+           }
+     ])  
+  }); 
    // return res.status(200).json();
   // return res.status(200).json({_id:'1', title:'aaaa'});
 
 });
-
+*/
 router.post('/posts', expressJwt({secret: process.env.JWT_SECRET}), function(req, res, next) {
   var body = req.body;
   var title = body.title;

@@ -130,12 +130,11 @@ export function resetDeletedSong() {
   }
 };
 
-export function fetchSong(id) {
-  const request = axios.get(`${ROOT_URL}/songs/${id}`);
+export function setActiveSong(activeSong) {
 
   return {
-    type: FETCH_SONG,
-    payload: request
+    type: ACTIVE_SONG,
+    payload: activeSong
   };
 }
 

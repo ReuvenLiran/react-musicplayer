@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, browserHistory } from 'react-router';
+import { Router } from 'react-router';
 import routes from './routes';
 import configureStore from './store/configureStore.js';
 
@@ -21,7 +21,7 @@ let render = () => {
 
   ReactDOM.render(
    <Provider store={store}>
-    <Router history={browserHistory} routes={routes} />
+    <Router routes={routes} />
    </Provider>,
     MOUNT_NODE
   )
@@ -32,7 +32,7 @@ let render = () => {
 // ========================================================
 if (__DEV__) {
   if (window.devToolsExtension) {
-    window.devToolsExtension.open()
+    //window.devToolsExtension.open()
   }
 }
 
