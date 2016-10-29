@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-import ReactMusicPlayer from '../react-music-player/ReactMusicPlayer';
+import SongItem  from '../containers/SongItemContainer';
+import ReactMusicPlayer from '../react-music-player/ReactMusicPlayerContainer';
 // import SplitPane from 'react-split-pane';
 
      const listStyle = {
@@ -8,7 +9,7 @@ import ReactMusicPlayer from '../react-music-player/ReactMusicPlayer';
       width: '60%',
       //position: 'absolute',
       float:'left',
-     // backgroundColor: 'blue',
+      backgroundColor: 'yellow',
       };
       
     const playerStyle = {
@@ -16,7 +17,7 @@ import ReactMusicPlayer from '../react-music-player/ReactMusicPlayer';
       //width: '60%',
       //position: 'absolute',
       float:'right',
-     // backgroundColor: 'blue',
+      //backgroundColor: 'yellow',
       };
     const durationStyle = {
           float:'right',
@@ -28,6 +29,7 @@ import ReactMusicPlayer from '../react-music-player/ReactMusicPlayer';
     const listItemStyle = {
       width: '100%',
       listStyleType:'none',
+      //backgroundColor: 'yellow',
       display: 'inline-block',
     }
 
@@ -39,21 +41,22 @@ import ReactMusicPlayer from '../react-music-player/ReactMusicPlayer';
 class SongsList extends Component {
 
   constructor(props) {
-    super(props);
-
+    super(props); 
     this.state = {
-      visible: this.props.visibileFields
+      selectedItem: null
     };
-  }
+   }
 
   componentWillMount() {
     this.props.fetchSongs();
     //this.handleClick = this.handleClick.bind(this);
   }
 
- handleClick(songs, song){
-    alert(song.track_name);
-    this.renderPlayer(songs, song);
+ handleClick(song){
+    this.setState({selectedItem: idx});
+    //alert(song.track_name);
+    this.props.setActiveSong(song)
+    //this.renderPlayer(songs, song);
   }
  
  secondsToMinutes(s) {
@@ -79,7 +82,7 @@ class SongsList extends Component {
   */  
     if(empty) {
 
-    alert(song.track_name);
+    //alert(song.track_name);
       return ( <ReactMusicPlayer songs={songs} song={song} /> );
     } else {
       return <div className="container"><h1>Songs</h1><h3>Loading...</h3></div>      
@@ -92,11 +95,13 @@ class SongsList extends Component {
  renderSongs(songs) {
     return songs.map((song) => {
         return (
-          <li style={listItemStyle}  onClick={() => { this.handleClick(songs, song) }} className="list-group-item" key={song.file}>
+          <SongItem song={song} />
+          /*
+          <li style={listItemStyle}  onClick={() => { this.handleClick(songs, song) }} className="btn btn-primary btn-lg" key={song.file}>
             <h3 style={trackNameStyle} className="list-group-item-heading">{song.track_name}</h3>
             <span style={artistStyle}>{song.artist_name} </span>
             <span style={durationStyle}>{this.secondsToMinutes(song.track_length)} </span>
-          </li>
+          </li>*/
 
       );
     });

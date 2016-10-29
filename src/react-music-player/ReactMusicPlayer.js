@@ -4,9 +4,13 @@ import classnames from 'classnames';
 import shuffle from 'shuffle-array';
 
 class ReactMusicPlayer extends Component {
+
+ //  const { songs, loading, error } = this.props.songsList; 
+
     state = {
         //active: this.props.songs[0],
-        active: this.props.song,
+        activeSong: this.props.activeSong,
+        active: this.props.activeSong,
         current: 0,
         progress: 0,
         random: false,
@@ -22,8 +26,9 @@ class ReactMusicPlayer extends Component {
         playerElement.addEventListener('ended', this.end);
         playerElement.addEventListener('error', this.next);
     }
-
+ 
     componentWillUnmount = () => {
+        console.log('MOUNT', this.props);
         let playerElement = this.refs.player;
         playerElement.removeEventListener('timeupdate', this.updateProgress);
         playerElement.removeEventListener('ended', this.end);
@@ -76,6 +81,7 @@ class ReactMusicPlayer extends Component {
         var active = this.state.songs[current];
 
         this.setState({ current: current, active: active, progress: 0 });
+        this.props.setActiveSong(active);
 
         //this.refs.player.src = active.url;
         this.refs.player.src = active.file;
@@ -88,6 +94,7 @@ class ReactMusicPlayer extends Component {
         var active = this.state.songs[current];
 
         this.setState({ current: current, active: active, progress: 0 });
+        this.props.setActiveSong(active);
 
         //this.refs.player.src = active.url;
         this.refs.player.src = active.file;
@@ -111,10 +118,26 @@ class ReactMusicPlayer extends Component {
         this.refs.player.volume = (mute) ? 1 : 0;
     }
 
+    setSong = () => {
+         console.log('setSong props',this.props);
+         console.log('setSong state',this.state);
+        if(this.props.activeSong != this.state.activeSong ){
+             
+            this.setState({ active: this.props.activeSong });
+            this.setState({ activeSong: this.props.activeSong });
+        }    
+       
+    }
     render () {
+        /*
+        console.log('player-render',this.props);
+        console.log('player-render',this.state.active);
+        console.log('player-render',this.state.songs);
+*/
+        this.setSong();
 
-        const { active, play, progress } = this.state;
-
+        const { activeSong, play, progress } = this.state;
+        
         // let coverClass = classnames('player-cover', {'no-height': active.cover });
         let playPauseClass = classnames('fa', {'fa-pause': play}, {'fa-play': !play});
         let volumeClass = classnames('fa', {'fa-volume-up': !this.state.mute}, {'fa-volume-off': this.state.mute});
@@ -123,13 +146,13 @@ class ReactMusicPlayer extends Component {
 
         return (
             <div className="player-container">
-                <audio src={active.file} autoPlay={this.state.play} preload="auto" ref="player"></audio>
+                <audio src={activeSong.file} autoPlay={this.state.play} preload="auto" ref="player"></audio>
 
-                <div className="player-cover" style={{backgroundImage: 'url('+ active.cover +')'}}></div>
+                <div className="player-cover" style={{backgroundImage: 'url('+ activeSong.cover +')'}}></div>
 
                 <div className="artist-info">
-                    <h2 className="artist-name">{active.artist_name}</h2>
-                    <h3 className="artist-song-name">{active.track_name}</h3>
+                    <h2 className="artist-name">{activeSong.artist_name}</h2>
+                    <h3 className="artist-song-name">{activeSong.track_name}</h3>
                 </div>
 
                 <div className="player-progress-container" onClick={this.setProgress}>

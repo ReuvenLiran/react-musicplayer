@@ -19,7 +19,8 @@ export const VALIDATE_SONG_FIELDS_FAILURE = 'VALIDATE_SONG_FIELDS_FAILURE';
 export const RESET_SONG_FIELDS = 'RESET_SONG_FIELDS';
 
 //Fetch SONG
-export const FETCH_SONG = 'FETCH_SONG';
+//export const FETCH_SONG = 'FETCH_SONG';
+export const ACTIVE_SONG = 'ACTIVE_SONG';
 export const FETCH_SONG_SUCCESS = 'FETCH_SONG_SUCCESS';
 export const FETCH_SONG_FAILURE = 'FETCH_SONG_FAILURE';
 export const RESET_ACTIVE_SONG = 'RESET_ACTIVE_SONG';
@@ -129,9 +130,17 @@ export function resetDeletedSong() {
     type: RESET_DELETED_SONG
   }
 };
+/*
+export function fetchSong(activeSong) {
+
+  return {
+    type: FETCH_SONG,
+    payload: activeSong
+  };
+}*/ 
 
 export function setActiveSong(activeSong) {
-
+  console.log('Actions', activeSong);  
   return {
     type: ACTIVE_SONG,
     payload: activeSong

@@ -1,6 +1,6 @@
 import {
 	FETCH_SONGS, FETCH_SONGS_SUCCESS, FETCH_SONGS_FAILURE, RESET_SONGS,
-	FETCH_SONG, FETCH_SONG_SUCCESS,  FETCH_SONG_FAILURE, RESET_ACTIVE_SONG,
+	ACTIVE_SONG, FETCH_SONG_SUCCESS,  FETCH_SONG_FAILURE, RESET_ACTIVE_SONG,
 	CREATE_SONG, CREATE_SONG_SUCCESS, CREATE_SONG_FAILURE, RESET_NEW_SONG,
 	DELETE_SONG, DELETE_SONG_SUCCESS, DELETE_SONG_FAILURE, RESET_DELETED_SONG,
   VALIDATE_SONG_FIELDS,VALIDATE_SONG_FIELDS_SUCCESS, VALIDATE_SONG_FIELDS_FAILURE, RESET_SONG_FIELDS
@@ -26,11 +26,15 @@ export default function(state = INITIAL_STATE, action) {
     return { ...state, songsList: {songs: [], error: error, loading: false} };
   case RESET_SONGS:// reset songList to initial state
     return { ...state, songsList: {songs: [], error:null, loading: false} };
-
+/*
   case FETCH_SONG:
     return { ...state, activeSong:{...state.activeSong, loading: true}};
-  case FETCH_SONG_SUCCESS:
-    return { ...state, activeSong: {song: action.payload.data, error:null, loading: false}};
+  */
+   case FETCH_SONG_SUCCESS:
+    return { ...state, activeSong: {song: action.payload.data, error:null, loading: false}}; 
+  case ACTIVE_SONG:
+    console.log('reducer', action);
+    return { ...state, activeSong: action.payload};
   case FETCH_SONG_FAILURE:
     error = action.payload.data || {message: action.payload.message};//2nd one is network or server down errors
     return { ...state, activeSong: {song: null, error:error, loading:false}};

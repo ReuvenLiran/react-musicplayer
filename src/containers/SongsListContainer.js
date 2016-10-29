@@ -1,12 +1,13 @@
 import { connect } from 'react-redux'
-import { fetchSongs, fetchSongsSuccess, fetchSongsFailure } from '../actions/songs';
+import { fetchSongs, fetchSongsSuccess, fetchSongsFailure, setActiveSong } from '../actions/songs';
 
 import SongsList from '../components/SongsList';
 
 
 const mapStateToProps = (state) => {
   return { 
-    songsList: state.songs.songsList
+    songsList: state.songs.songsList,
+    activeSong: state.songs.activeSong
   };
 }
 
@@ -16,6 +17,11 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(fetchSongs()).then((response) => {
            // !response.error ? dispatch(fetchSongsSuccess(response.payload)) : dispatch(fetchSongsFailure(response.payload));
            dispatch(fetchSongsSuccess(response.payload));
+          // alert(response.payload);
+           console.log(response.payload.data[0]);
+
+           dispatch(setActiveSong(response.payload.data[0]));
+
          });
     }
   }
