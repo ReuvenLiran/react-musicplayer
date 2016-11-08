@@ -8,46 +8,59 @@
     margin: 0 auto;
     overflow: hidden;
 
-    background-color: #EAEDEF;
-    border-radius: 20px;
+    background-color: #d2d5d7;
+    border-radius: 30px;
+    border-color:#bbbdbf;
     box-shadow: 0 10px 20px rgba(0,0,0,.2);
 }
 
 .player-cover {
-    height: 160px;
-
+    height: 260px;
+    position: relative;
     background-position: top center;
     background-size: cover;
     transition: height .4s;
 }
 
 .artist-info {
-    padding: 60px 35px 35px;
+    background-color: black;
+    opacity: 0.6;
+    color: white;
+   // padding: 60px 35px 35px;
+     position: absolute;
+    bottom: 0;
+
+    width:100%;
+
 }
 
 .artist-name,
 .artist-song-name {
     margin: 0;
+    margin-left: 5%;
 }
 
 .artist-name {
-    margin-bottom: 5px;
-
-    font-size: 32px;
+    margin-bottom: 8px;
+    
+    font-size: 18px;
     font-weight: 400;
 }
 
 .artist-song-name {
-    font-size: 18px;
+    font-size: 28px;
     font-weight: 400;
 }
 
 .player-progress-container {
     position: relative;
 
-    width: 365px;
+    //width: 365px;
+    width: 98%;
     height: 9px;
     margin: 0 auto;
+
+    margin-left: 2%;
 
     background-color: #414141;
     border-radius: 40px;

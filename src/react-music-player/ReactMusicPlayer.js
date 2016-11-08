@@ -82,7 +82,6 @@ class ReactMusicPlayer extends Component {
 
         this.setState({ current: current, active: active, progress: 0 });
         this.props.setActiveSong(active);
-
         //this.refs.player.src = active.url;
         this.refs.player.src = active.file;
         this.play();
@@ -95,7 +94,6 @@ class ReactMusicPlayer extends Component {
 
         this.setState({ current: current, active: active, progress: 0 });
         this.props.setActiveSong(active);
-
         //this.refs.player.src = active.url;
         this.refs.player.src = active.file;
         this.play();
@@ -138,21 +136,23 @@ class ReactMusicPlayer extends Component {
 
         const { activeSong, play, progress } = this.state;
         
-        // let coverClass = classnames('player-cover', {'no-height': active.cover });
+        let coverClass = classnames('player-cover', {'no-height': activeSong.cover });
         let playPauseClass = classnames('fa', {'fa-pause': play}, {'fa-play': !play});
         let volumeClass = classnames('fa', {'fa-volume-up': !this.state.mute}, {'fa-volume-off': this.state.mute});
         let repeatClass = classnames('player-btn small repeat', {'active': this.state.repeat});
         let randomClass = classnames('player-btn small random', {'active': this.state.random });
-
+       // console.log('cover', activeSong.cover);
         return (
             <div className="player-container">
                 <audio src={activeSong.file} autoPlay={this.state.play} preload="auto" ref="player"></audio>
 
-                <div className="player-cover" style={{backgroundImage: 'url('+ activeSong.cover +')'}}></div>
+                <div className="player-cover" style={{backgroundImage: 'url("data:image/png;base64,'+ activeSong.cover +'")'}}>
 
-                <div className="artist-info">
-                    <h2 className="artist-name">{activeSong.artist_name}</h2>
-                    <h3 className="artist-song-name">{activeSong.track_name}</h3>
+                    <div className="artist-info">
+                        <h1 className="artist-song-name">{activeSong.track_name}</h1>
+                        <h3 className="artist-name">{activeSong.artists}</h3>
+                    </div>
+                    
                 </div>
 
                 <div className="player-progress-container" onClick={this.setProgress}>

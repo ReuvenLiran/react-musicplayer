@@ -45,7 +45,7 @@ function echoPrint(file) {
                     metadata.duration = data[1];
                     //trackMetadata = trackMetadata[0];
                     resolve(metadata);
-                    console.log(this.file + " got fingerprint");
+                    console.log(file + " got fingerprint");
                 } 
 
                 if ( error || 
@@ -62,7 +62,7 @@ function echoPrint(file) {
         var url = 'http://api.acoustid.org/v2/lookup?client=d4H1RrABux&meta=recordings&duration=';
         url = url + oldMetadata.duration + '&fingerprint=' + oldMetadata.fingerPrint;
         
-        console.log('getRecordingMetadata ' + this.file);
+        console.log('getRecordingMetadata ' + url); 
         return new Promise((resolve, reject) => {
             
           request(url, function (error, response, body) {
@@ -86,7 +86,8 @@ function echoPrint(file) {
 
         var url = 'https://api.musixmatch.com/ws/1.1/track.search?apikey=ed989de507e721695e454b7df8337677&format=json&q_track=';
         url = url + oldMetadata.trackTitle + '&q_artist=' + oldMetadata.artist + '&quorum_factor=1';
-        
+        console.log(url);
+
         return new Promise((resolve, reject) => {
             
             request(url, function (error, response, body) {
@@ -134,9 +135,9 @@ function echoPrint(file) {
     }
  
 router.get('/fileUpdater', function(req, res, next) {
- 
+   
     fs.readdir(path, function(err, items) {
-        console.log('path' + path);
+        //console.log('path' + path);
         for (var i=0; i<items.length; i++) {
         
             var file = path + '/' + items[i];

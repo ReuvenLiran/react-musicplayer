@@ -32,8 +32,7 @@ export default function(state = INITIAL_STATE, action) {
   */
    case FETCH_SONG_SUCCESS:
     return { ...state, activeSong: {song: action.payload.data, error:null, loading: false}}; 
-  case ACTIVE_SONG:
-    console.log('reducer', action);
+  case ACTIVE_SONG: 
     return { ...state, activeSong: action.payload};
   case FETCH_SONG_FAILURE:
     error = action.payload.data || {message: action.payload.message};//2nd one is network or server down errors

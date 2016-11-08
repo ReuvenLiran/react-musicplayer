@@ -2,14 +2,14 @@ import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 
 class SongDetails extends Component {
-  static contextTypes = {
+  /*static contextTypes = {
     router: PropTypes.object
-  };
+  };*/
 
   componentWillUnmount() {
     //Important! If your component is navigating based on some global state(from say componentWillReceiveProps)
     //always reset that global state back to null when you REMOUNT
-     this.props.resetMe();
+    // this.props.resetMe();
   }
 
   componentDidMount() {

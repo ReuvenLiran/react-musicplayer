@@ -23,15 +23,16 @@ postSchema.plugin(timestamps);
 var Post = mongoose.model('Post', postSchema);
 
 router.get('/songs', function(req, res, next){
+    
     var fileUpdater = require('../routes/fileUpdater');
     var songs;
 
     fileUpdater.then(promisedResult => {
 
-      console.log('api///fileUpdate');
-      /*
+      //console.log('api///fileUpdate');
+       /*
       co(function*() {
-
+    
         console.log(songs);
         var r = yield global.db.collection('songs').insertMany(promisedResult.success);
         assert.equal(resJson.success.length, r.insertedCount);
@@ -40,15 +41,15 @@ router.get('/songs', function(req, res, next){
       }).catch(function(err) {
 
         console.log(err.stack);
-      });
-      */
+      });*/
+       
       co(function*() {
         console.log('select');
         songs = yield global.db.collection('songs').find().toArray();
         
         //global.db.close();
         res.json(songs);
-        console.log(songs);
+       // console.log(songs);
 
      }).catch(function(err) {
 

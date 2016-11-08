@@ -22,6 +22,7 @@ MongoClient.connect(process.env.MONGOLAB_URI || monogoLab, function(err, db) {
 });*/
 co(function*() {
 global.db = yield MongoClient.connect(process.env.MONGOLAB_URI || monogoLab);
+global.colSongs = global.db.collection('songs');
 console.log("Connected correctly to server");
 });
 

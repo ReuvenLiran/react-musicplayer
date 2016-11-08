@@ -51,13 +51,13 @@ class SongsList extends Component {
     this.props.fetchSongs();
     //this.handleClick = this.handleClick.bind(this);
   }
-
+/*
  handleClick(song){
     this.setState({selectedItem: idx});
     //alert(song.track_name);
     this.props.setActiveSong(song)
     //this.renderPlayer(songs, song);
-  }
+  }*/
  
  secondsToMinutes(s) {
     //var h = Math.floor(s/3600); //Get whole hours
@@ -121,35 +121,6 @@ class SongsList extends Component {
         <h1>Songs</h1>
         <ul className="list-group" style={listStyle}>
         {this.renderSongs(songs)}
-        
-          <li styles="list-style:none; display: inline-block;" className="list-group-item" key="1">
-            <h3 className="list-group-item-heading">wwwwwwwwwww</h3>
-            <div> 
-            <span>wwwwwwwwwww </span>
-            <span>wwww</span>
-            </div> 
-         </li>
-           <li styles="list-style:none; display: inline-block;" className="list-group-item" key="2">
-            <h3 className="list-group-item-heading">wwwwwwwwwww</h3>
-            <div> 
-            <span>wwwwwwwwwww </span>
-            <span>wwww</span>
-            </div> 
-         </li>
-          <li styles="list-style:none; display: inline-block;" className="list-group-item" key="3">
-            <h3 className="list-group-item-heading">wwwwwwwwwww</h3>
-            <div> 
-            <span>wwwwwwwwwww </span>
-            <span>wwww</span>
-            </div> 
-         </li>
-      <li styles="list-style:none; display: inline-block;" className="list-group-item" key="4">
-            <h3 className="list-group-item-heading">wwwwwwwwwww</h3>
-            <div> 
-            <span>wwwwwwwwwww </span>
-            <span>wwww</span>
-            </div> 
-         </li>
         </ul>
         
         <div style={playerStyle}>

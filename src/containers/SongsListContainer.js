@@ -17,9 +17,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(fetchSongs()).then((response) => {
            // !response.error ? dispatch(fetchSongsSuccess(response.payload)) : dispatch(fetchSongsFailure(response.payload));
            dispatch(fetchSongsSuccess(response.payload));
-          // alert(response.payload);
-           console.log(response.payload.data[0]);
-
+          // console.log(response.payload.data[0]);
            dispatch(setActiveSong(response.payload.data[0]));
 
          });
