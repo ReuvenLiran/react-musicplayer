@@ -9,7 +9,7 @@ import ReactMusicPlayer from '../react-music-player/ReactMusicPlayerContainer';
       width: '60%',
       //position: 'absolute',
       float:'left',
-      backgroundColor: 'yellow',
+      backgroundColor: '#222222',
       };
       
     const playerStyle = {
@@ -80,7 +80,7 @@ class SongsList extends Component {
      song = songs[0];
    }
   */  
-    if(empty) {
+    if(song != undefined) {
 
     //alert(song.track_name);
       return ( <ReactMusicPlayer songs={songs} song={song} /> );
@@ -111,14 +111,14 @@ class SongsList extends Component {
     const { songs, loading, error } = this.props.songsList; 
     
     if(loading) {
-      return <div className="container"><h1>Songs</h1><h3>Loading...</h3></div>      
+      return <div className="container"><h1>Loading...</h1></div>      
     } else if(error) {
       return <div className="alert alert-danger">Error: {error.message}</div>
     }
  
     return (
       <div className="container">
-        <h1>Songs</h1>
+        
         <ul className="list-group" style={listStyle}>
         {this.renderSongs(songs)}
         </ul>

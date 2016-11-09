@@ -1,32 +1,35 @@
-import React, { Component } from 'react'; 
-// import SplitPane from 'react-split-pane';
+import React, { Component } from 'react';  
 
-     const listStyle = {
-      //color: 'blue',
-      width: '60%',
-      //position: 'absolute',
+     const listStyle = { 
+      width: '60%', 
       float:'left',
       backgroundColor: 'yellow',
       };
       
-    const playerStyle = {
-     // color: 'blue',
-      //width: '60%',
-      //position: 'absolute',
+    const playerStyle = { 
       float:'right',
-      //backgroundColor: 'yellow',
+      backgroundColor: '#222222',
       };
     const durationStyle = {
+           width: '5%',
+          //display: 'inline-block',
           float:'right',
-          marginRigth:'20px',
+          marginLeft:'2%',
+          marginRight:'2%',
     }
     const artistStyle = {
-          float:'left',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textAlign: 'left',
+        width: '90%', 
+        float:'left',
      }
     var listItemStyle = {
+      marginBottom: '2%',
       width: '100%',
       listStyleType:'none',
-      //backgroundColor: 'yellow',
+      backgroundColor: '#222222',
       display: 'inline-block',
     }
 
@@ -39,11 +42,7 @@ class SongItem extends Component {
 
   constructor(props) {
     super(props);
-  }
-
-  componentWillMount() { 
-    //this.handleClick = this.handleClick.bind(this);
-  }
+  } 
 
  handleClick(song){
     this.props.setActiveSong(song);
@@ -55,32 +54,32 @@ class SongItem extends Component {
     return (m < 10 ? '0'+m : m)+":"+(s < 10 ? '0'+s : s); //zero padding on minutes and seconds
 }
 
+alignArtists(artists) {
+  var strArtists = "";
+  artists.map((artist) => {
+    strArtists = strArtists.concat(artist).concat(", ");
+  });
+
+  return  strArtists.slice(0, strArtists.length-2);
+}
+
   render() {
 
     const { song, activeSong } = this.props; 
-    
-    //console.log('songitem-activeSong', this.props.activeSong);
-    //console.log('songitem-song',  this.props.song);
-
+     
     if(song._id == activeSong._id){
-        console.log('before', listItemStyle );
-        var backgroundColor = {};
-        backgroundColor.backgroundColor = 'yellow';
-        listItemStyle.backgroundColor =  'yellow'; 
-//        listItemStyle.push( backgroundColor );
-        //console.log('after', listItemStyle);
+       listItemStyle.backgroundColor =  '#3A3A3A';  
     } else {
-      delete listItemStyle.backgroundColor;
+      listItemStyle.backgroundColor = '#222222';
     }
 
     return (
       <li style={listItemStyle}  onClick={() => { this.handleClick(song) }} className="btn btn-primary btn-lg" key={song.file}>
             <h3 style={trackNameStyle} className="list-group-item-heading">{song.track_name}</h3>
-            <span style={artistStyle}>{song.artists} </span>
-            <span style={durationStyle}>{this.secondsToMinutes(song.track_length)} </span>
+            <div align="left" style={artistStyle}>{this.alignArtists(song.artists)} </div>
+            <div style={durationStyle}>{this.secondsToMinutes(song.track_length)} </div>
           </li>
     );
   }
-}
- 
+} 
 export default SongItem;

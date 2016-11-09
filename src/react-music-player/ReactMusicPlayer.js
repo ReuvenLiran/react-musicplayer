@@ -126,6 +126,18 @@ class ReactMusicPlayer extends Component {
         }    
        
     }
+
+    alignArtists(artists) {
+        var strArtists = "";
+        if (artists != undefined){
+            artists.map((artist) => {
+                strArtists = strArtists.concat(artist).concat(", ");
+            }); 
+        }
+        return  strArtists.slice(0, strArtists.length-2); 
+      //  alert('a');
+    }
+
     render () {
         /*
         console.log('player-render',this.props);
@@ -150,7 +162,7 @@ class ReactMusicPlayer extends Component {
 
                     <div className="artist-info">
                         <h1 className="artist-song-name">{activeSong.track_name}</h1>
-                        <h3 className="artist-name">{activeSong.artists}</h3>
+                        <h3 className="artist-name">{this.alignArtists(activeSong.artists)}</h3>
                     </div>
                     
                 </div>
