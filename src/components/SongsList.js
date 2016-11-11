@@ -2,7 +2,7 @@ import '../styles/SongList.scss';
 import React, { Component } from 'react';
 //import { Link } from 'react-router';
 import SongItem  from '../containers/SongItemContainer';
-import ReactMusicPlayer from '../react-music-player/ReactMusicPlayerContainer';
+import ReactMusicPlayer from '../containers/ReactMusicPlayerContainer';
  
 class SongsList extends Component {
 
