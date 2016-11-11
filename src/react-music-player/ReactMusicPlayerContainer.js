@@ -13,7 +13,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setActiveSong: (activeSong) => { 
-           console.log('setActiveSong', activeSong);
+           //console.log('setActiveSong', activeSong);
            dispatch(setActiveSong(activeSong));
     }
   }

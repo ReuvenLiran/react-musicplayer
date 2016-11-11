@@ -28,7 +28,7 @@ class ReactMusicPlayer extends Component {
     }
  
     componentWillUnmount = () => {
-        console.log('MOUNT', this.props);
+        //console.log('MOUNT', this.props);
         let playerElement = this.refs.player;
         playerElement.removeEventListener('timeupdate', this.updateProgress);
         playerElement.removeEventListener('ended', this.end);
@@ -117,8 +117,8 @@ class ReactMusicPlayer extends Component {
     }
 
     setSong = () => {
-         console.log('setSong props',this.props);
-         console.log('setSong state',this.state);
+         //console.log('setSong props',this.props);
+         //console.log('setSong state',this.state);
         if(this.props.activeSong != this.state.activeSong ){
              
             this.setState({ active: this.props.activeSong });

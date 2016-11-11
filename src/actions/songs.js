@@ -140,7 +140,7 @@ export function fetchSong(activeSong) {
 }*/ 
 
 export function setActiveSong(activeSong) {
-  console.log('Actions', activeSong);  
+ // console.log('Actions', activeSong);  
   return {
     type: ACTIVE_SONG,
     payload: activeSong

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { setActiveSong } from '../actions/songs';
 
-import SongItem from '../components/songItem';
+import SongItem from '../components/SongItem';
 
 
 const mapStateToProps = (state) => {

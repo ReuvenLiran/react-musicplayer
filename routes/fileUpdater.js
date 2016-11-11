@@ -296,10 +296,12 @@ module.exports = new Promise((resolve, reject) => { //function(resolve, reject) 
                 if (type == audio) {
                
                     var pos = docsSongs.findIndex(x => x.file == items[i]);
+                   
                     if (pos != -1){
 
                         continue;
-                    }            
+                    }        
+                        
                     numAudio++;
                     console.log( items[i], numAudio);
 

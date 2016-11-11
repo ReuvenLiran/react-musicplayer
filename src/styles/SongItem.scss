@@ -1,0 +1,31 @@
+ .song-item {
+    margin-bottom: 2%;
+    width: 100%;
+    list-style-type:none;
+    background-color: #222222;
+    color: white;
+    display: inline-block;
+    border-color: #3A3A3A;
+    
+    &.active-song { background-color: #3A3A3A; }   
+    &:hover { background-color: #525252; color: white; } 
+     
+}
+ 
+.duration {
+    width: '5%';
+    display: inline-block;
+    //float: right;
+    margin-left: 2%;
+    margin-right: 2%; 
+}
+
+.artists  {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: left;
+    width: 90%; 
+    float: left;
+} 
+  
