@@ -115,15 +115,24 @@ app.use(function(err, req, res, next) {
   } else {
     res.json({error: err.message})
   }
-});
+}); 
 
 
-/*
-mongoose.connect(process.env.MONGOLAB_URI || monogoLab);
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  console.log('DB connected!');
-});*/
+var items = [1, 2, 3, 4, 5];
+var fn = function asyncMultiplyBy2(v){ // sample async action
+    console.log(v);
+    return new Promise(resolve => setTimeout(() => resolve(v * 2), 1000));
+};
+// map over forEach since it returns
+
+var actions = items.map(fn); // run the function over all items.
+
+// we now have a promises array and we want to wait for it
+
+var results = Promise.all(actions); // pass array of promises
+
+results.then(data => // or just .then(console.log)
+    console.log(data) // [2, 4, 6, 8, 10]
+);
 
 module.exports = app;

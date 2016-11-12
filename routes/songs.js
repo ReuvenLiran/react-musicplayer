@@ -24,6 +24,8 @@ var Post = mongoose.model('Post', postSchema);
 
 router.get('/songs', function(req, res, next){
     
+    delete require.cache[require.resolve('../routes/fileUpdater')];
+    console.log(require.cache[require.resolve('../routes/fileUpdater')]);
     var fileUpdater = require('../routes/fileUpdater');
     var songs;
 

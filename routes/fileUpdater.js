@@ -9,10 +9,26 @@ var ID3Writer = require('browser-id3-writer');
 var request = require('request');
 var Path = require('path');
 //var Promise = require('promise');
-const audio = 'audio/mpeg';
+const AUDIO_MP3 = 'audio/mpeg';
+const AUDIO_FLAC = 'audio/x-flac';
+const EXTENSION_MP3 = '.mp3';
+const EXTENSION_FLAC = '.flac';
 const path = 'src/static';
+const GOOGLE_API_LIMIT_EXCEEDED = -2;
+const EXIST_IN_DB = -1;
+const NEW = 1;
 var co = require('co');
 var assert = require('assert');
+var docsSongs;
+    var filesSuccess;
+    var filesFail;
+    var resJson = {
+        insert:[ ] ,
+        update:[ ] ,
+        fail: { }
+    }
+    var numfiles = 0;
+    var numAudio = 0;
 
 var child;
   /*              
@@ -27,8 +43,7 @@ function echoPrint(file) {
 
         child = exec('./fpcalc', [ file ],
             (error, stdout, stderr) => { 
-            //console.log(stderr);
-            //console.log(error);
+              
             var trackMetadata;
             var data; 
             let metadata = {
@@ -54,7 +69,8 @@ function echoPrint(file) {
             if ( error || 
                 metadata.fingerPrint.length == 0 || 
                 metadata.duration.length == 0) 
-            {
+            {   
+                console.log(file + " has not been recognized");
                 reject([file + " has not been recognized", file]);
             }
         });
@@ -135,7 +151,7 @@ function getMoreDetails(oldMetadata) {
 
     var url = 'https://api.musixmatch.com/ws/1.1/track.search?apikey=ed989de507e721695e454b7df8337677&format=json&q_track=';
     url = url + trackTitle + '&q_artist=' + artist + '&quorum_factor=1';
-    //console.log(url);
+
     return new Promise((resolve, reject) => {
         
         request(url, function (error, response, body) {
@@ -145,16 +161,10 @@ function getMoreDetails(oldMetadata) {
                 var metadata = {
                     metadata: mBody.message.body.track_list[0].track,
                     oldMetadata: oldMetadata  
-                   /* file: oldMetadata.file,
-                    fingerPrint: oldMetadata.fingerPrint,
-                    trackId: oldMetadata.trackId, */
-                    
                 }
                 resolve(metadata);
-                //console.log('getMoreDetails success');
-                //console.log(mBody.message.body.track_list[0].track.track_name + " got its metadata");
             } else {
-                console.log('error ' + error);
+                console.log('error1 ' + error);
                 reject(error);
             }
         
@@ -170,16 +180,15 @@ function getTrackCover(trackName, artists) {
             + "&cx=" + SEARCH_ENGINE + "&q=" + trackName + " " + artists
             + "&searchType=image";
 
-     // console.log('getTrackCover-BEFORE    ', url);
      url = encodeURI(url);
      url = url.replace(/\(/g, "%28").replace(/\)/g, "%29")
         .replace(/,/g, "%2C");
      console.log(url);
-     //console.log('getTrackCover-AFTER     ', url);
+
      return new Promise((resolve, reject) => {
         
         request(url, function (error, response, body) {
-            
+            console.log(response.statusCode);
             if (!error && response.statusCode == 200) {
                 var mBody = JSON.parse(body);
                 var coverUrl = mBody.items[0].link;
@@ -188,10 +197,14 @@ function getTrackCover(trackName, artists) {
                      function (data) { 
                         resolve(data);
                      }, function(err) {
-
+                         console.log(err);
                      });
+            } else if(response.statusCode == 403) {
+            
+                resolve(GOOGLE_API_LIMIT_EXCEEDED);
             } else {
-                console.log('error ' + error);
+            
+                console.log('error2 ' + error);
                 reject(error);
             }
         
@@ -206,9 +219,6 @@ function getCoverBuffer(coverUrl) {
 
         request.get(coverUrl, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-               // console.log('imgData', body);
-                //data = "data:" + response.headers["content-type"] + ";base64," + new Buffer(body).toString('base64');
-                //console.log('imgData', data);
                 resolve(body);
             }
         });
@@ -216,18 +226,9 @@ function getCoverBuffer(coverUrl) {
 }
 
 function writeTag(mData) {
-    //console.log(mData);
+    
+    var cover;
     var songBuffer = fs.readFileSync(mData.oldMetadata.file);
-    //var imgBuffer = fs.readFileSync( path + '/' + 'download.jpg');
-    console.log('metadata.cover', mData.cover);
-   // console.log('imgBuffer', imgBuffer);
-   
-/*
-    var md5 = require('sha1');
-    console.log(songBuffer);
-    var hash = md5(songBuffer);
-    console.log(hash);
-*/
 
     var writer = new ID3Writer(songBuffer);
         writer.setFrame('TIT2', mData.oldMetadata.trackTitle)
@@ -237,23 +238,37 @@ function writeTag(mData) {
             .setFrame('TYER', mData.metadata.first_release_date.substring(0,4)) // get year
             .setFrame('TLEN', mData.metadata.track_length * 1000) //milliseconds
             .setFrame('TCON', mData.metadata.primary_genres.music_genre_list)
-            .setFrame('USLT', 'This is unsychronised lyrics')
-            .setFrame('APIC',  mData.cover);
+            .setFrame('USLT', 'This is unsychronised lyrics');          
+    
+    if (mData.cover != GOOGLE_API_LIMIT_EXCEEDED){
+        writer.setFrame('APIC',  mData.cover);
+        cover = mData.cover.toString('base64');
+    } else {
+        cover = GOOGLE_API_LIMIT_EXCEEDED;
+    }
+
     writer.addTag();
 
-   // console.log('base64', mData.cover.toString('base64'));
-    console.log('aaaaaa');
     var taggedSongBuffer = new Buffer(writer.arrayBuffer);
     fs.writeFileSync(mData.oldMetadata.file, taggedSongBuffer);
 
+    var type = mime.lookup(mData.oldMetadata.file);
+    console.log(type);
+    if (type == AUDIO_MP3) {
+        type = EXTENSION_MP3;
+    } else if(type == AUDIO_FLAC) {
+        type = EXTENSION_FLAC;         
+    }
+    console.log(type, AUDIO_FLAC);
+
     var newName = mData.oldMetadata.trackTitle 
-                + ' - ' + mData.oldMetadata.artists + '.mp3';
+                + ' - ' + mData.oldMetadata.artists + type;
                 
     fs.rename(mData.oldMetadata.file, path + '/' + newName);
-    //console.log(mData.metadata.primary_genres.music_genre_list);
+
     console.log('write');
+ 
     return {_id: mData.oldMetadata.trackId,
-           //fingerPrint:mData.fingerPrint,
             file:newName, 
             track_name:mData.oldMetadata.trackTitle,
             album_name:mData.metadata.album_name,
@@ -261,222 +276,191 @@ function writeTag(mData) {
             year: mData.metadata.first_release_date.substring(0,4),
             track_length:mData.metadata.track_length,
             music_genre_list:mData.metadata.primary_genres.music_genre_list,
-            cover: mData.cover.toString('base64')};
+            cover:cover};
 }
 
-//router.get('/fileUpdater', function(req, res, next) {
-    var filesSuccess;
-    var filesFail;
-    var resJson = {
-        success:[ ] ,
-        fail: { }
-    }
-    var numfiles = 0;
-    var numAudio = 0;
+function songGetAndUpdateData(file) {
 
+ return new Promise((resolve, reject) => {
+
+    if (file == EXIST_IN_DB){
+        resolve(EXIST_IN_DB);
+    }
+    
+    echoPrint(file)
+        .then(function (data) { 
+
+        getRecordingMetadata(data)
+            .then(function (data) { 
+
+                var metadata = {
+                trackId: data.metadata.id,
+                trackTitle: data.metadata.title,
+                artists: [],
+                file: data.file,
+                fingerPrint: data.fingerPrint
+            }
+
+            console.log('recording', data.metadata);
+            
+            for (let artist of data.metadata.artists) {
+                console.log(artist);
+                metadata.artists.push(artist.name);
+            }
+        
+            Promise.all([ getMoreDetails(metadata),
+                            getTrackCover(metadata.trackTitle,
+                                          metadata.artists) ])
+                .then(values => {
+                    values[0].cover = values[1];
+                    var result = writeTag(values[0]);
+                    resJson.insert.push(result);
+                    resolve('insert');
+                    console.log('resolve');                          
+                    }).catch(reason => { 
+                        console.log('fail', reason);
+                    });
+                }, function(err) {
+
+                });
+            },function(err){
+
+            }); 
+     });  
+}
+
+function updateSongCover(fileData){
+    return new Promise((resolve, reject) => {
+
+        getTrackCover(fileData.track_name, fileData.artists)
+        .then(values => {
+                console.log(values);
+                if (values == GOOGLE_API_LIMIT_EXCEEDED){
+                    reject(GOOGLE_API_LIMIT_EXCEEDED);
+                    return;
+                }
+                var songBuffer = fs.readFileSync(path + '/' + fileData.file);
+
+                var writer = new ID3Writer(songBuffer);
+                writer.setFrame('APIC',  values);
+                writer.addTag();
+
+                fileData.cover = values.toString('base64');
+
+                var taggedSongBuffer = new Buffer(writer.arrayBuffer);
+                fs.writeFileSync(path + '/' + fileData.file, taggedSongBuffer);
+                resJson.update.push(fileData);
+
+                resolve('update');
+        }).catch(reason => { 
+          console.log('fail', reason);
+        });
+    });
+
+}
+function checkFile(item){
+    var file = path + '/' + item;
+    var type = mime.lookup(file);
+    console.log(type);
+    if (type != AUDIO_MP3 && type != AUDIO_FLAC) {
+        return;            
+    }
+    var pos = docsSongs.findIndex(x => x.file == item);
+    console.log( item, pos);
+ 
+    if (pos != -1){
+
+        if (docsSongs[pos].cover == GOOGLE_API_LIMIT_EXCEEDED ){
+            return [GOOGLE_API_LIMIT_EXCEEDED, docsSongs[pos]];
+            //return updateSongCover(docsSongs[pos]);
+        }
+        return [EXIST_IN_DB, file];
+    }  
+
+    return [NEW,file]; 
+}
+
+function main(docsSongs) {
+    return new Promise((resolve, reject) => {
+
+    var items;
+    items = fs.readdirSync(path);
+
+    var promises = items.map(function(item) {
+            
+            var result = checkFile(item);
+            if (result !== undefined ){
+                
+                if (result[0] == NEW ||
+                    result[0] == EXIST_IN_DB)
+                    {
+                       return songGetAndUpdateData(result[1]);
+                    } else {
+                       return updateSongCover(result[1]);
+                    }
+               // console.log('promises', songGetAndUpdateData(str)); 
+                
+            }  
+        });
+    // console.log(promises);
+   // setTimeout(function(){ console.log(promises);}, 6000);
+ 
+
+    Promise.all(promises).then(values => {
+        console.log( 'Promise.all',values);
+        if (resJson.insert.length > 0) {
+            
+            co(function*() {    
+                var r =  yield global.colSongs.insertMany(resJson.insert);
+            }).then(function(value){
+                resolve(true);
+                return resJson;
+            }).catch(function(err) {
+                console.log(err.stack);
+            });
+            
+        } else if (resJson.update.lenght > 0){
+             co(function*() {    
+                var r =  yield global.colSongs.updateMany(resJson.update);
+            }).then(function(value){
+                resolve(true);
+                return resJson;
+            }).catch(function(err) {
+                console.log(err.stack);
+            });
+        } else {
+            resolve(true);
+            return resJson;
+        }
+
+        }).catch(reason => { 
+            resolve("no changes");
+            console.log(' Promise.all', reason);
+        });
+    });
+  
+}
+ 
 module.exports = new Promise((resolve, reject) => { //function(resolve, reject) {
 
+    console.log('FILEUPDATER');
     var songs;
 
-    var docsSongs;
     co(function*() { 
-        docsSongs = yield global.colSongs.find().sort({file: 1}).toArray();
-        //console.log(docsSongs);
-        //assert.equal(docs.length, docs.length);
-   
-        fs.readdir(path, function(err, items) {
-           //console.log('PATH' + items);
-            for (var i=0; i<items.length; i++) {
-                
-            // if (items[i] == docsSongs.arrayBuffer)
+      docsSongs = yield global.colSongs.find().sort({file: 1}).toArray();
+      //assert.equal(docsSongs.length, docsSongs.length);
+    }).then(function (value) {
+      co(function*() { 
+        yield main(docsSongs);
+     }).then(function (value) {
+         console.log('finish');
+         resolve('finish');
+     }, function (err) {
+      console.error(err.stack);
+     });
+     
+    }, function (err) {
+     console.error(err.stack);
+    });
+});
   
-                var file = path + '/' + items[i];
-                var type = mime.lookup(file);
-                //console.log(type);
-                if (type == audio) {
-               
-                    var pos = docsSongs.findIndex(x => x.file == items[i]);
-                   
-                    if (pos != -1){
-
-                        continue;
-                    }        
-                        
-                    numAudio++;
-                    console.log( items[i], numAudio);
-
-                    echoPrint(file)
-                        .then( 
-                             function (data) {  
-                               console.log('recording');
-                                getRecordingMetadata(data)
-                                    .then(
-                                        function (data) { 
-                                             var metadata = {
-                                                trackId: data.metadata.id,
-                                                trackTitle: data.metadata.title,
-                                                artists: [],
-                                                file: data.file,
-                                                fingerPrint: data.fingerPrint
-                                            }
-                                            console.log('recording', data.metadata);
-                                            for (let artist of data.metadata.artists) {
-                                                console.log(artist);
-                                                metadata.artists.push(artist.name);
-                                            }
-                                           
-
-
-                                            console.log("promise all");
-                                            //console.log(metadata);
-
-                                            Promise.all([getMoreDetails(metadata),
-                                                         getTrackCover(metadata.trackTitle,
-                                                                       metadata.artists)])
-                                                    .then(values => {
-                                                        //console.log('values', values);
-                                                        values[0].cover = values[1];
-                                                        var result = writeTag(values[0]);
-                                                        resJson.success.push(result);
-                                                        numfiles++;
-                                                        if(numfiles == numAudio){ 
-                                                            co(function*() {
-                                                                var r =  yield global.colSongs.insertMany(resJson.success);
-                                                                console.log("insert");
-                                                                 }).catch(function(err) {
-                                                                                console.log(err.stack);
-                                                                });
-                                                                console.log("resolve");
-                                                                resolve(resJson);
-
-                                                        } 
-                                                      
-                                                        // console.log('result', result);
-                                                        
-                                                        //resJson.success.push(result);
-                                                        }).catch(reason => { 
-                                                        console.log(reason)
-                                                        });
-                                            
-
-
-                                            /*
-                                             getMoreDetails(metadata)
-                                                .then(
-                                                    function(data) {
-                                                        var metadata = data;
-
-                                                        getTrackCover(data.metadata.track_name + " " + data.metadata.artist_name).then(
-                                                            function(data) {
-                                                                metadata.cover = data;
-                                                                var result = writeTag(metadata);
-                                                                //console.log(result);
-                                                                
-                                                                resJson.success.push(result);
-                                                                numfiles++;
-                                                                //console.log(numfiles + ' ' + numAudio);
-            
-                                                                if(numfiles == numAudio){ 
-                                                                    resolve(resJson);
-                                                                }
-                                                        }, function(err) {
-                                                            console.log(err);     
-                                                        }); 
-                                                        //filesSuccess[data.file] = 
-                                                    }, function(err) {
-                                                        console.log(err);     
-                                                    });*/
-
-                                        }, function(err) {
-
-                                        });
-                            },function(err){
-
-                            });
-                        /* }).then( 
-                            function(data){
-
-                            }, function(err){
-
-                            });*/
-                    }
-            }
-            //console.log('end');
-        }); 
-        /*}).then( 
-            function(data){
-            // var MongoClient = require('mongodb').MongoClient,
-                // var col = DB.collection('songs');
-            
-            //console.log('================================================\n');
-            //console.log(hash);
-
-            console.log('success'); 
-            
-            //res.json(resJson);
-            }, function(err){
-
-            });*/ 
-            //resolve(resJson);
-        if (numAudio == 0){
-            resolve("finisth");
-        }
-    });
-
-}).catch(function(err) {
-    console.log(err.stack);
-    });
-
-//module.exports = router;
-/*module.exports = new Promise((resolve, reject) => {
-    console.log('exports' + resJson);
-    resolve(resJson);
-});*/
-
-
-
-
-
-
-
-
-/*
-trackMetadata1 = new trackMetadata('../src/static/LP - lost on you.mp3');
-
-trackMetadata1.echoPrint()
-    .then( 
-        function (data) { 
-            
-            trackMetadata1.getRecordingMetadata()
-                .then(
-                    function (data) { 
-                        trackMetadata1.trackTitle = data.title;
-                        trackMetadata1.artist = data.artists[0].name;
-                       
-                        trackMetadata1.getMoreDetails()
-                            .then(
-                                function(data) {
-                                    //console.log(data);
-                                    trackMetadata1.writeTag(data);
-                                    
-                                }, function(err) {
-
-                                });
-
-                    }, function(err) {
-
-                    });
-        },function(err){
-
-        });
-
-/*
-function trackMetadata(fingerPrint, duration, title, artist, album, year) {
-    this.fingerPrint = fingerPrint;
-    this.duration    = duration;
-    this.title       = title;
-    this.artist      = artist;
-    this.album       = album;
-    this.year        = year;
-}
-*/
