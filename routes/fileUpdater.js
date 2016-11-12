@@ -314,7 +314,15 @@ function songGetAndUpdateData(file) {
                 .then(values => {
                     values[0].cover = values[1];
                     var result = writeTag(values[0]);
-                    resJson.insert.push(result);
+
+                    var pos = docsSongs.findIndex(x => x._id == result._id);
+                    
+                    if (pos == -1) {
+                      resJson.insert.push(result);
+                    } else {
+                      resJson.update.push(result);
+                    }
+
                     resolve('insert');
                     console.log('resolve');                          
                     }).catch(reason => { 
@@ -369,11 +377,13 @@ function checkFile(item){
     console.log( item, pos);
  
     if (pos != -1){
-
         if (docsSongs[pos].cover == GOOGLE_API_LIMIT_EXCEEDED ){
+            console.log(docsSongs[pos].cover);
+            console.log('GOOGLE_API_LIMIT_EXCEEDED');
             return [GOOGLE_API_LIMIT_EXCEEDED, docsSongs[pos]];
-            //return updateSongCover(docsSongs[pos]);
         }
+
+        console.log('EXIST_IN_DB', file.file);
         return [EXIST_IN_DB, file];
     }  
 
@@ -385,54 +395,51 @@ function main(docsSongs) {
 
     var items;
     items = fs.readdirSync(path);
-
+    
     var promises = items.map(function(item) {
             
             var result = checkFile(item);
             if (result !== undefined ){
                 
-                if (result[0] == NEW ||
-                    result[0] == EXIST_IN_DB)
-                    {
-                       return songGetAndUpdateData(result[1]);
-                    } else {
-                       return updateSongCover(result[1]);
-                    }
-               // console.log('promises', songGetAndUpdateData(str)); 
-                
+                switch(result[0]){
+                    case NEW:
+                        return songGetAndUpdateData(result[1]);
+                    case EXIST_IN_DB:
+                        return Promise.resolve(EXIST_IN_DB); // Iave
+                    case GOOGLE_API_LIMIT_EXCEEDED:
+                        return updateSongCover(result[1]);
+                }
             }  
-        });
-    // console.log(promises);
-   // setTimeout(function(){ console.log(promises);}, 6000);
- 
+        }); 
 
     Promise.all(promises).then(values => {
         console.log( 'Promise.all',values);
-        if (resJson.insert.length > 0) {
+        var bulkWrite = [];
+      
+        co(function*() {  
             
-            co(function*() {    
-                var r =  yield global.colSongs.insertMany(resJson.insert);
-            }).then(function(value){
-                resolve(true);
-                return resJson;
-            }).catch(function(err) {
-                console.log(err.stack);
-            });
-            
-        } else if (resJson.update.lenght > 0){
-             co(function*() {    
-                var r =  yield global.colSongs.updateMany(resJson.update);
-            }).then(function(value){
-                resolve(true);
-                return resJson;
-            }).catch(function(err) {
-                console.log(err.stack);
-            });
-        } else {
+            for (insert of resJson.insert)
+            {   
+                bulkWrite.push({ insertOne: { document: insert } });
+            }
+            for (update of resJson.update)
+            {
+                bulkWrite.push({ updateOne: { filter: {_id: update._id}, update: update } });
+            }
+            if (Object.keys(bulkWrite).length > 0) {
+                var r = yield global.colSongs.bulkWrite(bulkWrite);
+            }
+
             resolve(true);
             return resJson;
-        }
 
+        }).then(function(value){
+            resolve(true);
+            return resJson;
+        }).catch(function(err) {
+            console.log(err.stack);
+        });
+            
         }).catch(reason => { 
             resolve("no changes");
             console.log(' Promise.all', reason);
