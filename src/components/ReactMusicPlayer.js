@@ -190,7 +190,7 @@ class ReactMusicPlayer extends Component {
 
         </div>
       </div>
-        )
+    )
   }
 }
 

@@ -4,9 +4,9 @@ import { FETCH_SONGS, FETCH_SONGS_SUCCESS,
 } from '../actions/songs'
 
 const INITIAL_STATE =
-             { songsList: { songs: [], error:null, loading: false },
-               activeSong:{ song:null, error:null, loading: false }
-             }
+  { songsList: { songs: [], error:null, loading: false },
+    activeSong:{ song:null, error:null, loading: false }
+  }
 
 export default function (state = INITIAL_STATE, action) {
   let error

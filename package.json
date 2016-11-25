@@ -37,7 +37,7 @@
       }
     },
     "deploy": {
-      "command": "npm run lint && npm run test && npm run clean && npm run compile",
+      "command": "npm run lint && npm run clean && npm run compile",
       "env": {
         "DEBUG": "app:*"
       }
@@ -59,13 +59,6 @@
     "start": {
       "command": "node bin/server",
       "env": {
-        "DEBUG": "app:*"
-      }
-    },
-    "test": {
-      "command": "node ./node_modules/karma/bin/karma start build/karma.conf",
-      "env": {
-        "NODE_ENV": "test",
         "DEBUG": "app:*"
       }
     }
