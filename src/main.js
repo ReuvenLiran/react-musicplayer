@@ -8,7 +8,7 @@ import configureStore from './store/configureStore.js'
 // ========================================================
 // Store Instantiation
 // ========================================================
-const initialState = window.___INITIAL_STATE__
+// const initialState = window.___INITIAL_STATE__
 const store = configureStore()
 
 // ========================================================
@@ -21,8 +21,8 @@ let render = () => {
 
   ReactDOM.render(
     <Provider store={store}>
-     <Router routes={routes} />
-   </Provider>,
+      <Router routes={routes} />
+    </Provider>,
     MOUNT_NODE
   )
 }

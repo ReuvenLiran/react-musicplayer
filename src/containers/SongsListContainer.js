@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { fetchSongs, fetchSongsSuccess, fetchSongsFailure, setActiveSong } from '../actions/songs'
+import { fetchSongs, fetchSongsSuccess, setActiveSong } from '../actions/songs'
 
 import SongsList from '../components/SongsList'
 

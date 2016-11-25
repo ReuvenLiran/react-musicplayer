@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 
 export default class App extends Component {
   componentWillMount () {
@@ -11,5 +11,9 @@ export default class App extends Component {
         {this.props.children}
       </div>
     )
+  }
+
+  propTypes = {
+    children: PropTypes.any
   }
 }

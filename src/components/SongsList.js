@@ -1,16 +1,10 @@
 import '../styles/SongList.scss'
-import React, { Component } from 'react'
-// import { Link } from 'react-router';
+import React, { Component, PropTypes } from 'react'
 import SongItem from '../containers/SongItemContainer'
 import ReactMusicPlayer from '../containers/ReactMusicPlayerContainer'
 
 class SongsList extends Component {
 
-/*
-  constructor (props) {
-    super(props)
-  }
-*/
   componentWillMount () {
     this.props.fetchSongs()
   }
@@ -60,6 +54,11 @@ class SongsList extends Component {
       </div>
     )
   }
+}
+
+SongsList.propTypes = {
+  songsList: PropTypes.array.isRequired,
+  fetchSongs: PropTypes.func.isRequired
 }
 
 export default SongsList

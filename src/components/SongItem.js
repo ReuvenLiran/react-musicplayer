@@ -1,15 +1,8 @@
 import '../styles/SongItem.scss'
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
-/*
-const colorActive = '#3A3A3A'
-const colorNotActive = '#222222'
-*/
+
 class SongItem extends Component {
-/*
-  constructor (props) {
-    super(props)
-  } */
 
   handleClick (song) {
     this.props.setActiveSong(song)
@@ -38,7 +31,7 @@ style(song, activeSong) {
   render () {
     const { song, activeSong } = this.props
 
-    let songItemClass = classnames('btn btn-lg song-item', { 'active-song': song._id == activeSong._id })
+    let songItemClass = classnames('btn btn-lg song-item', { 'active-song': song._id === activeSong._id })
 
     return (
       <li className={songItemClass} onClick={() => { this.handleClick(song) }}
@@ -50,4 +43,11 @@ style(song, activeSong) {
     )
   }
 }
+
+SongItem.propTypes = {
+  song: PropTypes.object.isRequired,
+  setActiveSong: PropTypes.func.isRequired,
+  activeSong: PropTypes.object.isRequired
+}
+
 export default SongItem

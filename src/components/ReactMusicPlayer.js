@@ -73,7 +73,8 @@ class ReactMusicPlayer extends Component {
 
   next = () => {
     var total = this.state.songs.length
-    var current = (this.state.repeat) ? this.state.current : (this.state.current < total - 1) ? this.state.current + 1 : 0
+    var current = (this.state.repeat) ? this.state.current
+        : (this.state.current < total - 1) ? this.state.current + 1 : 0
     var active = this.state.songs[current]
 
     this.setState({ current: current, active: active, progress: 0 })
@@ -113,7 +114,7 @@ class ReactMusicPlayer extends Component {
   }
 
   setSong = () => {
-    if (this.props.activeSong != this.state.activeSong) {
+    if (this.props.activeSong !== this.state.activeSong) {
       this.setState({ active: this.props.activeSong })
       this.setState({ activeSong: this.props.activeSong })
     }
@@ -121,7 +122,7 @@ class ReactMusicPlayer extends Component {
 
   alignArtists (artists) {
     var strArtists = ''
-    if (artists != undefined) {
+    if (artists !== undefined) {
       artists.map((artist) => {
         strArtists = strArtists.concat(artist).concat(', ')
       })
@@ -144,7 +145,8 @@ class ReactMusicPlayer extends Component {
       <div className='player-container'>
         <audio src={ROOT_URL + '/' + activeSong.file} autoPlay={this.state.play} preload='auto' ref='player' />
 
-        <div className='player-cover' style={{ backgroundImage: 'url("data:image/png;base64,' + activeSong.cover + '")' }}>
+        <div className='player-cover'
+          style={{ backgroundImage: 'url("data:image/png;base64,' + activeSong.cover + '")' }}>
 
           <div className='artist-info'>
             <h1 className='artist-song-name'>{activeSong.track_name}</h1>
@@ -194,7 +196,9 @@ class ReactMusicPlayer extends Component {
 
 ReactMusicPlayer.propTypes = {
   autoplay: PropTypes.bool,
-  songs: PropTypes.array.isRequired
+  songs: PropTypes.array.isRequired,
+  setActiveSong: PropTypes.func.isRequired,
+  activeSong: PropTypes.object
 }
 
 export default ReactMusicPlayer
