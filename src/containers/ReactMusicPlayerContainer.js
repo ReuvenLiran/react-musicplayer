@@ -1,20 +1,19 @@
 import { connect } from 'react-redux'
-import { setActiveSong } from '../actions/songs';
+import { setActiveSong } from '../actions/songs'
 
-import ReactMusicPlayer from '../components/ReactMusicPlayer';
-
+import ReactMusicPlayer from '../components/ReactMusicPlayer'
 
 const mapStateToProps = (state) => {
-  return { 
+  return {
     activeSong: state.songs.activeSong
-  };
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setActiveSong: (activeSong) => { 
-           //console.log('setActiveSong', activeSong);
-           dispatch(setActiveSong(activeSong));
+    setActiveSong: (activeSong) => {
+           // console.log('setActiveSong', activeSong);
+      dispatch(setActiveSong(activeSong))
     }
   }
 }

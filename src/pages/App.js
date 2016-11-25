@@ -1,13 +1,11 @@
-import React from 'react';
-import { Component } from 'react';
-// import AppContainer from '../containers/AppContainer';
+import React, { Component } from 'react'
 
 export default class App extends Component {
-  render() {
+  render () {
     return (
-    	/* <AppContainer> */ 
-    	 this.props.children
-      /* </AppContainer> */ 
-    );
+      /* <AppContainer> */
+      this.props.children
+      /* </AppContainer> */
+    )
   }
 }

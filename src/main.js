@@ -1,15 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { Router } from 'react-router';
-import routes from './routes';
-import configureStore from './store/configureStore.js';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+import { Router } from 'react-router'
+import routes from './routes'
+import configureStore from './store/configureStore.js'
 
 // ========================================================
 // Store Instantiation
 // ========================================================
 const initialState = window.___INITIAL_STATE__
-const store = configureStore();
+const store = configureStore()
 
 // ========================================================
 // Render Setup
@@ -20,8 +20,8 @@ let render = () => {
   // onst routes = require('./routes/index').default(store)
 
   ReactDOM.render(
-   <Provider store={store}>
-    <Router routes={routes} />
+    <Provider store={store}>
+     <Router routes={routes} />
    </Provider>,
     MOUNT_NODE
   )
@@ -32,7 +32,7 @@ let render = () => {
 // ========================================================
 if (__DEV__) {
   if (window.devToolsExtension) {
-    //window.devToolsExtension.open()
+    // window.devToolsExtension.open()
   }
 }
 
