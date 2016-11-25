@@ -1,9 +1,5 @@
 import { Component, PropTypes } from 'react'
 
-App.propTypes = {
-  children: PropTypes.any
-}
-
 export default class App extends Component {
   render () {
     return (
@@ -11,5 +7,9 @@ export default class App extends Component {
       this.props.children
       /* </AppContainer> */
     )
+  }
+
+  propTypes = {
+    children: PropTypes.any
   }
 }
