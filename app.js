@@ -1,25 +1,12 @@
 var express = require('express')
-var path = require('path')
-var favicon = require('serve-favicon')
 var logger = require('morgan')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
-// var mongoose = require('mongoose');
-var router = express.Router()
 var jwt = require('jsonwebtoken')
-
 var monogoLab = 'mongodb://admin:admin@ds013330.mlab.com:13330/react_nodejs'
 var MongoClient = require('mongodb').MongoClient
-var assert = require('assert')
 var co = require('co')
-/*
-MongoClient.connect(process.env.MONGOLAB_URI || monogoLab, function(err, db) {
-  assert.equal(null, err);
-  db = DB;
-  console.log(db);
-  console.log("Connected correctly to DB.");
-  //db.close();
-}); */
+
 co(function*() {
   global.db = yield MongoClient.connect(process.env.MONGOLAB_URI || monogoLab)
   global.colSongs = global.db.collection('songs')
