@@ -1,4 +1,5 @@
 import axios from 'axios'
+import * as constants from '../constants'
 
 // Songs list
 export const FETCH_SONGS = 'FETCH_SONGS'
@@ -9,11 +10,10 @@ export const RESET_SONGS = 'RESET_SONGS'
 // Active Song
 export const ACTIVE_SONG = 'ACTIVE_SONG'
 
-const ROOT_URL = location.href.indexOf('localhost') > 0 ? 'http://localhost:3000/api' : '/api'
 export function fetchSongs () {
   const request = axios({
     method: 'get',
-    url: `${ROOT_URL}/songs`,
+    url: `${constants.ROOT_URL_API}/songs`,
     headers: []
   })
 

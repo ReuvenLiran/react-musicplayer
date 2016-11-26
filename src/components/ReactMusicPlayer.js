@@ -1,4 +1,5 @@
 import '../styles/ReactMusicPlayer.scss'
+import * as constants from '../constants'
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
 import shuffle from 'shuffle-array'
@@ -132,7 +133,6 @@ class ReactMusicPlayer extends Component {
 
   render () {
     this.setSong()
-    const ROOT_URL = location.href.indexOf('localhost') > 0 ? 'http://localhost:3000/' : '/'
     const { activeSong, play, progress } = this.state
 
     // let coverClass = classnames('player-cover', { 'no-height': activeSong.cover })
@@ -140,10 +140,11 @@ class ReactMusicPlayer extends Component {
     let volumeClass = classnames('fa', { 'fa-volume-up': !this.state.mute }, { 'fa-volume-off': this.state.mute })
     let repeatClass = classnames('player-btn small repeat', { 'active': this.state.repeat })
     let randomClass = classnames('player-btn small random', { 'active': this.state.random })
-       // console.log('cover', activeSong.cover);
+
     return (
       <div className='player-container'>
-        <audio src={ROOT_URL + '/' + activeSong.file} autoPlay={this.state.play} preload='auto' ref='player' />
+        <audio src={constants.ROOT_URL + '/' + activeSong.file}
+          autoPlay={this.state.play} preload='auto' ref='player' />
 
         <div className='player-cover'
           style={{ backgroundImage: 'url("data:image/png;base64,' + activeSong.cover + '")' }}>
