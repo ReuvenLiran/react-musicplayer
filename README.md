@@ -8,6 +8,8 @@ and receives basic metadata. Then, it consumes musixmatch webservice for additio
 The last webservice retrieves cover photo from google api (limit up to 100 HTTP requests per day).
 
 Metadata is sent to monogdb and presented at client.
+
+[Musicplayer Live](http://reuvenliran.hopto.org/)
  
 The app was tested on Linux.
 
