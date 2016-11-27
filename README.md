@@ -27,3 +27,5 @@ on ARM, you should run npm rebuild node-sass
 
 open http://localhost:8080/ on your browser
 
+* The app is not fully sync - deleteing files is currently not supported.
+
