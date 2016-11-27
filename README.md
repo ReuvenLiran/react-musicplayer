@@ -23,7 +23,7 @@ npm start - for client
 
 npm run server - for server
 
-on ARM, you need to run npm rebuild node-sass
+on ARM, you should run npm rebuild node-sass
 
 open http://localhost:8080/ on your browser
 
