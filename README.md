@@ -11,7 +11,9 @@ Metadata is sent to monogdb and presented at client.
 
 [Musicplayer Live](http://reuvenliran.hopto.org/)
  
-The app was tested on Linux.
+The app was tested on Linux 64bit.
+For another version of fpcalc - chromaprint:
+https://acoustid.org/chromaprint
 
 git clone 
 
