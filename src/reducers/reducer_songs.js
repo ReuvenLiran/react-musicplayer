@@ -4,7 +4,7 @@ import { FETCH_SONGS, FETCH_SONGS_SUCCESS,
 } from '../actions/songs'
 
 const INITIAL_STATE =
-  { songsList: { songs: [], error:null, loading: false },
+  { songsList: { songs: [], error:null, loading: true },
     activeSong:{ song:null, error:null, loading: false }
   }
 

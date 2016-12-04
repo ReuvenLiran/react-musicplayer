@@ -35,13 +35,11 @@ var child;
           id3({ file: file, type: id3.OPEN_LOCAL }, function(err, tags) {
             console.log(tags);
           }); */
- 
-  
-          
+
 function echoPrint(file) {
     return new Promise((resolve, reject) => {
 
-        child = exec('./fpcalc', [ file ],
+        child = exec('./binary/fpcalc', [ file ],
             (error, stdout, stderr) => { 
               
             var trackMetadata;

@@ -1,14 +1,18 @@
+import '../styles/SongList.scss'
 import React, { Component } from 'react'
-import SongsList from '../containers/SongsListContainer.js'
+import SongsIndexContainer from '../containers/SongsIndexContainer'
+// import ReactMusicPlayer from '../containers/ReactMusicPlayerContainer'
 
 class SongsIndex extends Component {
+
   render () {
     return (
-      <div>
-        <SongsList />
+      <div className='container'>
+        <SongsIndexContainer />
       </div>
     )
   }
 }
 
 export default SongsIndex
+

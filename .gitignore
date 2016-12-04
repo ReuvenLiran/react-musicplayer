@@ -37,6 +37,9 @@ coverage
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
 
+# Binary files like fpcalc
+binary
+
 # Dependency directories
 node_modules
 jspm_packages
