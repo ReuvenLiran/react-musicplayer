@@ -8,8 +8,12 @@ and receives basic metadata. Then, it consumes musixmatch webservice for additio
 The last webservice retrieves cover photo from google api (limit up to 100 HTTP requests per day).
 
 Metadata is sent to monogdb and presented at client.
+
+[Musicplayer Live](http://reuvenliran.hopto.org/)
  
-The app was tested on Linux.
+The app was tested on Linux 64bit.
+For another version of fpcalc - chromaprint:
+https://acoustid.org/chromaprint
 
 git clone 
 
@@ -21,5 +25,9 @@ npm start - for client
 
 npm run server - for server
 
+on ARM, you should run npm rebuild node-sass
+
 open http://localhost:8080/ on your browser
+
+* The app is not fully sync - deleteing files is currently not supported.
 
