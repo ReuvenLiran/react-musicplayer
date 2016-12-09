@@ -145,7 +145,7 @@ class ReactMusicPlayerFloat extends Component {
 
     return (
 
-      <div className='player-container' style={{ 'bottom' : '0', 'left' : '0', 'height': '12%', 'width': '100%' }}>
+      <div className='player-container' style={{ 'bottom' : '0', 'left' : '0', 'width': '100%' }}>
 
         <audio src={constants.ROOT_URL + '/' + activeSong.file}
           autoPlay={this.state.play} preload='auto' ref='player' />
@@ -164,19 +164,18 @@ class ReactMusicPlayerFloat extends Component {
               <h1 className='artist-name'>{this.alignArtists(activeSong.artists)}</h1>
             </div>
           </li>
-          <li style={{ 'min-width' : '5vw', 'max-width' : '10vw' }} >
+          <li style={{ 'float' : 'right', 'width' : '5vw', 'max-width' : '10vw' }} >
             <button onClick={this.previous} className='player-btn big' title='Previous Song'>
               <i className='fa fa-backward' />
             </button>
           </li>
 
-          <li style={{ 'min-width' : '5vw', 'max-width' : '10vw' }} >
+          <li style={{ 'float' : 'right', 'min-width' : '5vw', 'max-width' : '10vw' }} >
             <button onClick={this.toggle} className='player-btn big' title='Play/Pause'>
               <i className={playPauseClass} />
             </button>
           </li>
-          <li style={{ 'min-width' : '5vw', 'max-width' : '10vw' }} >
-
+          <li style={{ 'float' : 'right', 'min-width' : '5vw', 'max-width' : '10vw' }} >
             <button onClick={this.next} className='player-btn big' title='Next Song'>
               <i className='fa fa-forward' />
             </button>
