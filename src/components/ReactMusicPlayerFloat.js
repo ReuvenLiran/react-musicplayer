@@ -170,7 +170,8 @@ class ReactMusicPlayerFloat extends Component {
             </div>
           </div>
 
-          <div style={{ 'float' : 'right', 'min-width' : '5vw', 'max-width' : '20vw', 'height' : 'inherit' }} className='hidden-sm-down'>
+          <div style={{ 'float' : 'right', 'min-width' : '5vw', 'max-width' : '20vw', 'height' : 'inherit' }}
+            className='hidden-sm-down'>
             <button className={repeatClass} onClick={this.repeat} title='Repeat'>
               <i className='fa fa-repeat' style={{ margin: 'auto' }} />
             </button>

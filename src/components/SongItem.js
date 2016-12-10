@@ -22,12 +22,7 @@ class SongItem extends Component {
 
     return strArtists.slice(0, strArtists.length - 2)
   }
-/*
-style(song, activeSong) {
-  return (song._id == activeSong._id ?
-         {backgroundColor: colorActive} : {backgroundColor: colorNotActive });
-   }
-*/
+
   render () {
     const { song, activeSong } = this.props
 
@@ -39,9 +34,15 @@ style(song, activeSong) {
         key={song.file}>
         <div className='player-cover1'
           style={{ backgroundImage: 'url("data:image/png;base64,' + song.cover + '")' }} />
-        <div style={{ 'float' : 'left', 'width' : '20vw', 'margin-left' : '5vw' }} className='song-name'>{song.track_name}</div>
-        <div style={{ 'float' : 'left', 'width' : '40vw', 'margin-left' : '5vw' }} className='artists'>{this.alignArtists(song.artists)} </div>
-        <div style={{ 'float' : 'left', 'width' : '5vw', 'margin-left' : '5vw' }} className='duration'> {this.secondsToMinutes(song.track_length)} </div>
+        <div style={{ 'float' : 'left', 'width' : '20vw', 'margin-left' : '5vw' }} className='song-name'>
+          {song.track_name}
+        </div>
+        <div style={{ 'float' : 'left', 'width' : '40vw', 'margin-left' : '5vw' }} className='artists'>
+          {this.alignArtists(song.artists)}
+        </div>
+        <div style={{ 'float' : 'left', 'width' : '5vw', 'margin-left' : '5vw' }} className='duration'>
+          {this.secondsToMinutes(song.track_length)}
+        </div>
       </li>
     )
   }
