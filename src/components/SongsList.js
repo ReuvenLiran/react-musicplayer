@@ -21,7 +21,7 @@ class SongsList extends Component {
     console.log('SongsList', songs)
 
     return (
-      <div className='container'>
+      <div className='container' style={{ 'margin' : '0', 'width' : 'inherit' }} >
         <ul className='list-group songs-list'>
           {this.renderSongs(songs)}
         </ul>

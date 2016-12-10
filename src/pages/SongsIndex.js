@@ -7,7 +7,7 @@ class SongsIndex extends Component {
 
   render () {
     return (
-      <div className='container'>
+      <div className='container' style={{ 'width' : '100%' }}>
         <SongsIndexContainer />
       </div>
     )

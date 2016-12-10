@@ -31,14 +31,17 @@ style(song, activeSong) {
   render () {
     const { song, activeSong } = this.props
 
-    let songItemClass = classnames('btn btn-lg song-item', { 'active-song': song._id === activeSong._id })
+    let songItemClass = classnames('song-item', { 'active-song': song._id === activeSong._id })
+    // let songItemClass = classnames('btn btn-lg song-item', { 'active-song': song._id === activeSong._id })
 
     return (
       <li className={songItemClass} onClick={() => { this.handleClick(song) }}
         key={song.file}>
-        <h3 className='list-group-item-heading'>{song.track_name}</h3>
-        <div className='artists'>{this.alignArtists(song.artists)} </div>
-        <div className='duration'> {this.secondsToMinutes(song.track_length)} </div>
+        <div className='player-cover1'
+          style={{ backgroundImage: 'url("data:image/png;base64,' + song.cover + '")' }} />
+        <div style={{ 'float' : 'left', 'width' : '20vw', 'margin-left' : '5vw' }} className='song-name'>{song.track_name}</div>
+        <div style={{ 'float' : 'left', 'width' : '40vw', 'margin-left' : '5vw' }} className='artists'>{this.alignArtists(song.artists)} </div>
+        <div style={{ 'float' : 'left', 'width' : '5vw', 'margin-left' : '5vw' }} className='duration'> {this.secondsToMinutes(song.track_length)} </div>
       </li>
     )
   }

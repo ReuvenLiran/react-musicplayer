@@ -6,38 +6,17 @@
   transform: translateY(50%);
 }
 
-
-/* Player */
-.no-height {
-    height: 0 !important;
-}
-
-body, ul, ul li {
-    padding:0px;
-    margin:0px;
-}
-
-ul {
-    list-style:none;
-    height: 100%;
-    width: 100%;
-   background: #849ccf;   
-
-}
-
-ul li {
-    display:inline-block;
-    margin: 0 auto;
-    height: 98%;
-    margin-right: 3vmax;
-    top: 0;
-}
+button:active,
+button:focus,
+*:active,
+*:focus  {
+    -moz-outline-style: none; 
+    outline-style: none;
+    outline:0;
+} 
 
 .player-container {
-    /*background: rgba(59, 89, 152, 1);*/
-    background: #849ccf;   
-    //background: yellow;
-    color: white; 
+    background: #0099CC;
     padding: 0;
     height: inherit;
     width: inherit;
@@ -48,10 +27,11 @@ ul li {
 }
 
 .player-cover {
-    //float : left;
+    float : left;
     position: relative;
-    height: 98%;
-    //display: inline-block;
+    height: inherit;
+    width: 10vw;
+    margin-right: 2vw;
     background-position: top center;
     background-size: cover;
     transition: height .4s;
@@ -70,76 +50,17 @@ ul li {
 
 .artist-name,
 .artist-song-name {
-    color: white;
-     margin: 0 auto;
+    color: #CCFFCC;
+    margin: 0 auto;
     position: relative;
-    //top: 66%;
-    //height: 10%;
-    //position: absolute;
     text-overflow: ellipsis;
     white-space: pre-wrap;
-    //margin-top: 5px;
-   // max-height: 80%;
     overflow: hidden;
     font-family: 'Oswald', sans-serif; margin-left: 5%;
-   // justify-content: center;
-   // align-items: center;
-    //display: block;
 }
-
 
 .artist-song-name {
     margin-bottom: 4%;
-}
-
-.player-progress-container {
-    position: relative;
-
-    width: inherit;
-    height: inherit;
-
-    display: block;
-   // width: 30%;
-    margin: auto;
-    //margin-top: 30px;
-    margin-left: 2%;
-
-    //background-color: #414141;
-    background-color: #414141;
-
-    border-radius: 10px;
-}
-
-.player-progress-value {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-
-    background-color: #CDD2D8;
-    border-radius: 40px;
-
-    &:after {
-        position: absolute;
-        top: -3px;
-        right: -6px;
-        content: '';
-
-        width: 9px;
-        height: 9px;
-
-        border-radius: 50%;
-        background-color: #7748B5;
-        box-shadow: rgba(0,0,0,.2) 0 0 5px 2px;
-    }
-}
-
-.player-options {
-    display: flex;
-    justify-content: space-between;
-    padding: 40px 0 20px;
-    width: 365px;
-    margin: 0 auto;
 }
 
 .player-buttons {
@@ -150,51 +71,24 @@ ul li {
 }
 
 .player-btn {
-    //display:inline-block;
     margin: 0 auto;
-     color: #17233D;
+    color: #CCFFCC;
     background-color: transparent;
-    border: 0;
-    //top: 25%;
-    position: absolute;
-
-    height: inherit;
-    border-radius: 50%;
-    outline: 0;
-   // transition: all .4s;
-    /*
-    i {
-        font-size: 28px;
-        margin: 0 auto;
-        margin-right: 2vw;
-    }*/
-
-    &.active{
-        color: #b3b3b3;
-    }
     
-     @include vertical-align();
-/*
-     &.big {
-        width: 20%;
-        height: 20%;
-        i {
-            font-size: 5.2vw;
-        }
-     }*/
-    /*
-    &.big {
-        width: 50px;
-        height: 3vw;
-
-        i {
-            font-size: 3vw;
-        }
-    }*/
-
+    border: none;
+    outline:none;
+    height: 100%;
+    margin-right: 2vw;
+   // border-radius: 50%;
+    outline: 0;
+   
+    &.active{
+        color: #66CCFF;
+    }
+   
     &.medium {
-        width: 30px;
-        height: 2vw;
+        width: 30px; 
+        height: 100%;
 
         i {
             font-size: 2vw;
@@ -210,17 +104,6 @@ ul li {
     }
 }
 
-.player-controls {
-    width: 180px;
-
-    .player-btn {
-        color: #D9D9D9;
-
-        background-color: #414141;
-    } 
-
-} 
-
 @media screen and (orientation: landscape) {
   .player-container {
      height : 8vmax;
@@ -229,22 +112,23 @@ ul li {
     .artist-song-name {
         font-size : 1.2vmax;
  } 
+
+ .player-cover {
+     width: 15vh;
+ }
  .player-btn{
-    // top: 25%;
-    
+
+    margin-left: 2vh;
      &.big {
         width: 20%;
-        height: 20%;
-        /*width: 3vmax;
-        height: 3vmax;*/
-
-        i {
+        height: 100%;
+      i {
             font-size: 3vmax;
         }
      }
  }
-
 }
+
 @media screen and (orientation: portrait) {
   .player-container {
      height : 14vmin;
@@ -252,16 +136,24 @@ ul li {
  .artist-name,
  .artist-song-name {
     font-size : 1.5vmin;
- }  
+ } 
+ .player-cover {
+     width: 15vw;
+ }
  .player-btn{
+      margin-left: 2vw;
+
      &.big {
-       
         width: 20%;
-        height: 20%;
+        height: 100%;
         i {
             font-size: 5.2vw;
         }
     }
  } 
+}
 
+div {
+    padding:0px;
+    margin:0px;
 }

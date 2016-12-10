@@ -19,7 +19,7 @@ class SongsIndex extends Component {
     } else {
       // console.log(this.props.songsList)
       return (
-        <div className='container' style={{ 'height' : '100%', 'width' : '100%' }} >
+        <div className='container' style={{ 'margin' : '0', 'height' : '100%', 'width' : 'inherit' }} >
           <SongsList height='80%' songs={songs} />
           <ReactMusicPlayerFloat height='20%' songs={songs} song={songs[0]} />
         </div>

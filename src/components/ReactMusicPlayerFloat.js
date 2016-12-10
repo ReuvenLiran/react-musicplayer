@@ -3,6 +3,8 @@ import * as constants from '../constants'
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
 import shuffle from 'shuffle-array'
+import LinearProgress from 'material-ui/LinearProgress'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 class ReactMusicPlayerFloat extends Component {
 
@@ -145,58 +147,54 @@ class ReactMusicPlayerFloat extends Component {
 
     return (
 
-      <div className='player-container' style={{ 'bottom' : '0', 'left' : '0', 'width': '100%' }}>
+      <footer className='player-container' style={{ 'width': '100%' }}>
 
         <audio src={constants.ROOT_URL + '/' + activeSong.file}
           autoPlay={this.state.play} preload='auto' ref='player' />
 
-        <div style={{ 'top' : '0', 'left' : '-2%', 'height' : '8%', 'width': '100%' }} className='player-progress-container' onClick={this.setProgress}>
-          <span className='player-progress-value' style={{ width: progress + '%' }} />
-        </div>
-        <ul>
-          <li style={{ 'width' : '10vmax' }}>
-            <div className='player-cover'
-              style={{ backgroundImage: 'url("data:image/png;base64,' + activeSong.cover + '")' }} />
-          </li>
-          <li style={{ 'width' : '30vw' }} >
+        <MuiThemeProvider>
+
+          <div style={{ 'top' : '0', 'left' : '-2%', 'height' : '8%', 'width': '100%' }} onClick={this.setProgress}>
+            <LinearProgress color='#003399' mode='determinate' value={progress} />
+          </div>
+        </MuiThemeProvider>
+        <div style={{ 'height' : 'inherit' }}>
+
+          <div className='player-cover'
+            style={{ backgroundImage: 'url("data:image/png;base64,' + activeSong.cover + '")' }} />
+
+          <div style={{ 'float' : 'left', 'width' : '37vw' }} >
             <div className='artist-info'>
               <h1 className='artist-song-name'>{activeSong.track_name}</h1>
               <h1 className='artist-name'>{this.alignArtists(activeSong.artists)}</h1>
             </div>
-          </li>
-          <li style={{ 'float' : 'right', 'width' : '5vw', 'max-width' : '10vw' }} >
-            <button onClick={this.previous} className='player-btn big' title='Previous Song'>
-              <i className='fa fa-backward' />
-            </button>
-          </li>
+          </div>
 
-          <li style={{ 'float' : 'right', 'min-width' : '5vw', 'max-width' : '10vw' }} >
-            <button onClick={this.toggle} className='player-btn big' title='Play/Pause'>
-              <i className={playPauseClass} />
-            </button>
-          </li>
-          <li style={{ 'float' : 'right', 'min-width' : '5vw', 'max-width' : '10vw' }} >
-            <button onClick={this.next} className='player-btn big' title='Next Song'>
-              <i className='fa fa-forward' />
-            </button>
-          </li>
-          <li style={{ 'max-width' : '6vw' }} className='hidden-sm-down'>
+          <div style={{ 'float' : 'right', 'min-width' : '5vw', 'max-width' : '20vw', 'height' : 'inherit' }} className='hidden-sm-down'>
             <button className={repeatClass} onClick={this.repeat} title='Repeat'>
               <i className='fa fa-repeat' style={{ margin: 'auto' }} />
             </button>
-          </li>
-          <li style={{ 'max-width' : '6vw' }} className='hidden-sm-down'>
             <button className={volumeClass1} onClick={this.toggleMute} title='Mute/Unmute'>
               <i className={volumeClass} />
             </button>
-          </li>
-          <li style={{ 'max-width' : '6vw' }} className='hidden-sm-down'>
             <button className={randomClass} onClick={this.randomize} title='Shuffle'>
               <i className='fa fa-random' />
             </button>
-          </li>
-        </ul>
-      </div>
+          </div>
+          <div style={{ 'float' : 'right', 'min-width' : '27vw', 'max-width' : '35vw', 'height' : 'inherit' }} >
+            <button onClick={this.previous} className='player-btn big' title='Previous Song'>
+              <i className='fa fa-backward' />
+            </button>
+            <button onClick={this.toggle} className='player-btn big' title='Play/Pause'>
+              <i className={playPauseClass} />
+            </button>
+            <button onClick={this.next} className='player-btn big' title='Next Song'>
+              <i className='fa fa-forward' />
+            </button>
+          </div>
+        </div>
+      </footer>
+
     )
   }
 }
