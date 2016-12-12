@@ -3,12 +3,12 @@ var logger = require('morgan')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var jwt = require('jsonwebtoken')
-var monogoLab = 'mongodb://admin:admin@ds013330.mlab.com:13330/react_nodejs'
+// var monogoLab = 'mongodb://admin:admin@ds013330.mlab.com:13330/react_nodejs'
 var MongoClient = require('mongodb').MongoClient
 var co = require('co')
-
+console.log(process.env.MONGOLAB_URI)
 co(function*() {
-  global.db = yield MongoClient.connect(process.env.MONGOLAB_URI || monogoLab)
+  global.db = yield MongoClient.connect(process.env.MONGOLAB_URI /* || monogoLab */)
   global.colSongs = global.db.collection('songs')
   console.log('Connected correctly to server')
 })
@@ -94,8 +94,7 @@ app.use(function (err, req, res, next) {
   if (err.status === 500) {
     console.error(err.stack)
     res.json({ error: 'Internal Server Error' })
-  }
-  else if (err.status === 404) {
+  }  else if (err.status === 404) {
     res.render('error')    // render error page
   } else {
     res.json({ error: err.message })
