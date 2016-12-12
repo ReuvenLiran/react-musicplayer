@@ -2,7 +2,7 @@
 
 
 Musicplayer with songs list.
-The app identifies songs in src/static folder:
+The app identifies songs in music_files folder:
 It gets a fingerprint using chrompraint (fpcalc), the fingerprint is sent to accoustid webservice 
 and receives basic metadata. Then, it consumes musixmatch webservice for additional metadata.
 The last webservice retrieves cover photo from google api (limit up to 100 HTTP requests per day).
