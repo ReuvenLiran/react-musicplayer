@@ -16,7 +16,7 @@ For another version of fpcalc - chromaprint:
 https://acoustid.org/chromaprint
 
 You need to set up api keys for google custom search engine,
-for acoustid and musixmatch.
+acoustid and musixmatch.
 I have created a custom search engine on google for searching images.
 My custom search engine is 011805731910874581480:pdmpfq5ss_m 
 
