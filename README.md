@@ -5,8 +5,7 @@ Music player with songs list.
 
 App's flow:
 
-It identifies songs in music_files folder, It gets a fingerprint using chrompraint (fpcalc), the fingerprint is sent to accoustid webservice and receives basic metadata. Then, it consumes musixmatch webservice for additional metadata.
-Also it retrieves cover photo from google custome seatch engine (limit up to 100 HTTP requests per day).
+At first, it identifies songs in music_files folder and  gets a fingerprint using chrompraint (fpcalc). The fingerprint is sent to accoustid webservice and receives basic metadata. Then, it consumes musixmatch webservice for additional metadata. Also it retrieves cover photo from google custome seatch engine (limit up to 100 HTTP requests per day).
 
 Metadata is sent to monogdb and presented at client.
 
