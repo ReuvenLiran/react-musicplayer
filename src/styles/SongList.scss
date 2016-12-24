@@ -8,3 +8,12 @@
 .player-style {
     float:'right',
 }
+
+@media screen and (max-width: 544px) {
+    .hidden-xs-down {
+       display: none;
+    } 
+    .display-xs-down {
+       display: block !important;
+    }
+}

@@ -46,8 +46,7 @@ function echoPrint (file) {
 
             if (!error) {
                 var duration;
-                //console.log(stdout);
-
+                
                 trackMetadata = stdout.split('\n');
                 
                 data = trackMetadata[2].split('=');

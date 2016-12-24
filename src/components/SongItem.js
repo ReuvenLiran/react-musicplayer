@@ -1,12 +1,16 @@
 import '../styles/SongItem.scss'
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
+import { TableRow, TableRowColumn } from 'material-ui/Table'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import autobind from 'autobind-decorator'
 
 class SongItem extends Component {
 
+/*
   handleClick (song) {
     this.props.setActiveSong(song)
-  }
+  } */
 
   secondsToMinutes (s) {
     var m = Math.floor(s / 60) // Get remaining minutes
@@ -23,27 +27,39 @@ class SongItem extends Component {
     return strArtists.slice(0, strArtists.length - 2)
   }
 
+  @autobind
+  rowClicked () {
+    // this.props.setActiveSong(song)
+    console.log(this.props.song)
+    this.props.setActiveSong(this.props.song)
+  }
+
   render () {
     const { song, activeSong } = this.props
 
-    let songItemClass = classnames('song-item', { 'active-song': song._id === activeSong._id })
-    // let songItemClass = classnames('btn btn-lg song-item', { 'active-song': song._id === activeSong._id })
-
     return (
-      <li className={songItemClass} onClick={() => { this.handleClick(song) }}
-        key={song.file}>
-        <div className='player-cover1'
-          style={{ backgroundImage: 'url("data:image/png;base64,' + song.cover + '")' }} />
-        <div style={{ 'float' : 'left', 'width' : '20vw', 'margin-left' : '5vw' }} className='song-name'>
-          {song.track_name}
-        </div>
-        <div style={{ 'float' : 'left', 'width' : '40vw', 'margin-left' : '5vw' }} className='artists'>
-          {this.alignArtists(song.artists)}
-        </div>
-        <div style={{ 'float' : 'left', 'width' : '5vw', 'margin-left' : '5vw' }} className='duration'>
-          {this.secondsToMinutes(song.track_length)}
-        </div>
-      </li>
+      <TableRow key={song._id} onClick={this.rowClicked} style={{ 'fontSize' : '14px' }}>
+        <TableRowColumn>
+          <div style={{ 'display' : 'inline-block', 'verticalAlign' :'middle' }}>
+            <img src={'data:image/png;base64,' + song.cover}
+              height='40' width='40' style={{ 'marginRight' : '2vh' }} />
+          </div>
+          <div style={{ 'maxWidth' : '75%', 'display' : 'inline-block', 'verticalAlign' :'middle' }}>
+            <div>
+              {song.track_name}
+            </div>
+            <div className='div-hidden display-xs-down'
+              style={{ 'fontSize' : '10px' }}>
+              <span className='over-flow' style={{ 'maxWidth' : '100%' }}>
+                {this.alignArtists(song.artists)}
+              </span>
+              <span>&nbsp;&#8226; {this.secondsToMinutes(song.track_length)} </span>
+            </div>
+          </div>
+        </TableRowColumn>
+        <TableRowColumn className='hidden-xs-down'>{this.alignArtists(song.artists)}</TableRowColumn>
+        <TableRowColumn className='hidden-xs-down'>{this.secondsToMinutes(song.track_length)}</TableRowColumn>
+      </TableRow>
     )
   }
 }

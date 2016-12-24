@@ -7,5 +7,6 @@ import SongsIndex from './pages/SongsIndex'
 export default (
   <Route path='/' component={App}>
     <IndexRoute component={SongsIndex} />
+    <Route path='/songs' component={SongsIndex} />
   </Route>
 )

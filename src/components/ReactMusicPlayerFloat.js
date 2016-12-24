@@ -5,6 +5,8 @@ import classnames from 'classnames'
 import shuffle from 'shuffle-array'
 import LinearProgress from 'material-ui/LinearProgress'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import { DEEP_ORANGE } from '../constants'
 
 class ReactMusicPlayerFloat extends Component {
 
@@ -17,7 +19,10 @@ class ReactMusicPlayerFloat extends Component {
     repeat: false,
     mute: false,
     play: this.props.autoplay || false,
-    songs: this.props.songs
+    songs: this.props.songs,
+    srcPlay: 'icons/ic_play_arrow_white_18dp.png',
+    srcMute: 'icons/ic_volume_off_black_18dp.png',
+    srcShuffle: 'icons/ic_shuffle_black_18dp.png',
   }
 
   componentDidMount = () => {
@@ -59,6 +64,7 @@ class ReactMusicPlayerFloat extends Component {
   play = () => {
     this.setState({ play: true })
     this.refs.player.play()
+    this.setState({ srcPlay : 'icons/ic_pause_white_18dp.png' })
   }
 
   pause = () => {
@@ -68,6 +74,9 @@ class ReactMusicPlayerFloat extends Component {
 
   toggle = () => {
     this.state.play ? this.pause() : this.play()
+    this.state.play ?
+    this.setState({ srcPlay : 'icons/ic_play_arrow_white_18dp.png' })
+    : this.setState({ srcPlay : 'icons/ic_pause_white_18dp.png' })
   }
 
   end = () => {
@@ -103,7 +112,10 @@ class ReactMusicPlayerFloat extends Component {
     var s = shuffle(this.state.songs.slice())
 
     this.setState({ songs: (!this.state.random) ? s : this.state.songs, random: !this.state.random })
-  }
+    this.setState({ srcShuffle: (!this.state.random) 
+      ? '/icons/ic_shuffle_black_18dp.png'
+      : '/icons/ic_shuffle_active_black_18dp.png' }) 
+ }
 
   repeat = () => {
     this.setState({ repeat: !this.state.repeat })
@@ -114,6 +126,11 @@ class ReactMusicPlayerFloat extends Component {
 
     this.setState({ mute: !this.state.mute })
     this.refs.player.volume = (mute) ? 1 : 0
+
+    let srcMute = (mute) ? '/icons/ic_volume_off_black_18dp.png' 
+    : '/icons/ic_volume_up_black_18dp.png'
+    this.setState({ srcMute: srcMute })
+
   }
 
   setSong = () => {
@@ -147,51 +164,54 @@ class ReactMusicPlayerFloat extends Component {
 
     return (
 
-      <footer className='player-container' style={{ 'width': '100%' }}>
+      <footer className='player-container' style={{ 'height' : '90px !important', 'width': '100%' }}>
 
         <audio src={constants.ROOT_URL + '/' + activeSong.file}
           autoPlay={this.state.play} preload='auto' ref='player' />
 
         <MuiThemeProvider>
 
-          <div style={{ 'top' : '0', 'left' : '-2%', 'height' : '8%', 'width': '100%' }} onClick={this.setProgress}>
-            <LinearProgress color='#003399' mode='determinate' value={progress} />
+          <div style={{ 'zIndex' : '2', 'top' : '0', 'left' : '-2%', 'height' : '6px', 'width': '100%' }} onClick={this.setProgress}>
+            <LinearProgress color={DEEP_ORANGE} mode='determinate' value={progress} />
           </div>
         </MuiThemeProvider>
-        <div style={{ 'height' : 'inherit' }}>
+        <div style={{ 'display' : 'flex', 'height' : '100%' }}>
 
           <div className='player-cover'
-            style={{ backgroundImage: 'url("data:image/png;base64,' + activeSong.cover + '")' }} />
+            style={{ 'height' : '100%', 'width' : '86px', 'backgroundImage': 'url("data:image/png;base64,' + activeSong.cover + '")' }} />
 
-          <div style={{ 'float' : 'left', 'width' : '37vw' }} >
+          <div style={{ 'display' : 'flex', 'flex' : '1', 'width' : '37vw' }} >
             <div className='artist-info'>
-              <h1 className='artist-song-name'>{activeSong.track_name}</h1>
-              <h1 className='artist-name'>{this.alignArtists(activeSong.artists)}</h1>
+              <h1 style={{ 'fontSize' : '12px' }} className='artist-song-name'>{activeSong.track_name}</h1>
+              <h1 style={{ 'fontSize' : '10px' }} className='artist-name'>{this.alignArtists(activeSong.artists)}</h1>
             </div>
           </div>
 
-          <div style={{ 'float' : 'right', 'min-width' : '5vw', 'max-width' : '20vw', 'height' : 'inherit' }}
-            className='hidden-sm-down'>
-            <button className={repeatClass} onClick={this.repeat} title='Repeat'>
-              <i className='fa fa-repeat' style={{ margin: 'auto' }} />
-            </button>
-            <button className={volumeClass1} onClick={this.toggleMute} title='Mute/Unmute'>
-              <i className={volumeClass} />
-            </button>
-            <button className={randomClass} onClick={this.randomize} title='Shuffle'>
-              <i className='fa fa-random' />
-            </button>
+          <div className='dv1' style={{ 'width' : '30%', 'display' : 'inline-block' }}>
+
+            <input type='image' style={{ 'transform' : 'translate(0, -35%)', 'marginRight' : '10px', 'width' : '20px' }} onClick={this.previous}
+              src='icons/ic_skip_previous_black_18dp.png' />
+             <span style={{'transform' : 'translate(0, -55%)'}}>
+           <div className='round-button' style={{ 'marginRight' : '10px' }} onClick={this.toggle}>
+              <div className='round-button-circle'>
+                <img style={{ 'width' : 'inherit' }} className='round-button-img'
+                  src={this.state.srcPlay} /></div></div>
+            </span>
+
+            <input type='image' style={{ 'transform' : 'translate(0, -35%)', 'marginRight' : '10px', 'width' : '20px' }} onClick={this.next}
+              src='icons/ic_skip_next_black_18dp.png' />
+
           </div>
-          <div style={{ 'float' : 'right', 'min-width' : '27vw', 'max-width' : '35vw', 'height' : 'inherit' }} >
-            <button onClick={this.previous} className='player-btn big' title='Previous Song'>
-              <i className='fa fa-backward' />
-            </button>
-            <button onClick={this.toggle} className='player-btn big' title='Play/Pause'>
-              <i className={playPauseClass} />
-            </button>
-            <button onClick={this.next} className='player-btn big' title='Next Song'>
-              <i className='fa fa-forward' />
-            </button>
+
+           <div className='dv1 hidden-xs-down' style={{ 'width' : '20%', 'display' : 'inline-block' }}>
+            <input className='vertical-align' 
+            type='image' style={{ 'marginLeft' : '20%', 'marginRight' : '10%', 'width' : '20px' }} onClick={this.repeat}
+              src='icons/ic_loop_black_18dp.png' />
+            <input className='vertical-align' type='image' style={{ 'marginRight' : '10%', 'width' : '20px' }} onClick={this.randomize}
+              src={this.state.srcShuffle} />
+            <input className='vertical-align' type='image' style={{ 'marginRight' : '10%', 'width' : '20px' }} onClick={this.toggleMute}
+              src={this.state.srcMute} />
+
           </div>
         </div>
       </footer>
