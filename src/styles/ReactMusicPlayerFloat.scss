@@ -16,7 +16,7 @@ button:focus,
 } 
 
 .player-container {
-    background: white;
+    background: #4f6073;
     padding: 0;
     //display: flex;
     height: inherit;
@@ -54,7 +54,7 @@ button:focus,
 
 .artist-name,
 .artist-song-name {
-    color:black;
+    color:#f7f6f7;
     margin: 0 auto;
     position: relative;
     text-overflow: ellipsis;
@@ -75,30 +75,32 @@ button:focus,
 }
 
 .player-btn {
-    margin: 0 auto;
-    color: black;
-    background-color: transparent;
-    
-    border: none;
-    outline:none;
-    height: 100%;
-    margin-right: 2vw;
-   // border-radius: 50%;
-    outline: 0;
    
+   cursor: pointer;
+   color: #f7f6f7;
+   margin-right: 7%;
+
     &.active{
-    color: black;
+    color: #dfceba;
     }
    
     &.medium {
-        width: 30px; 
-        height: 100%;
-
-        i {
-            font-size: 2vw;
-        }
+      font-size: 1.5em;
     }
-
+    
+    &.play {
+        border-radius: 50%;
+        width: 1.6em;
+        line-height: 1.6em;
+        text-align: center;
+        font-size: 1.8em;
+        background-color: #f7f6f7;
+        color: #030b15;
+    }
+    
+    &.skip {
+        vertical-align : top;
+    }
     &.volume {
         width: 40px;
     }
@@ -110,7 +112,8 @@ button:focus,
 
 @media screen and (orientation: landscape) {
   .player-container {
-     height : 8vmax;
+     //height : 8vmax;
+      height : 70px;
    } 
     .artist-name,
     .artist-song-name {
@@ -121,25 +124,14 @@ button:focus,
      width: 15vh;
  }
  .player-btn{
-
-    margin-left: 2vh;
-     &.big {
-        width: 20%;
-        height: 100%;
-      i {
-            font-size: 3vmax;
-        }
-     }
+    margin-left: 2vh;     
  }
-
-.round-button {
-	width: 5vw;
-    }
+ 
 }
-
+ 
 @media screen and (orientation: portrait) {
   .player-container {
-     height : 14vmin;
+     height : 75px;
   } 
  .artist-name,
  .artist-song-name {
@@ -149,22 +141,11 @@ button:focus,
      width: 15vw;
  }
  .player-btn{
-      margin-left: 2vw;
-
-     &.big {
-        width: 20%;
-        height: 100%;
-        i {
-            font-size: 5.2vw;
-        }
-    }
+    //  margin-left: 2vw;
+ 
  } 
-
-.round-button {
-	width: 5vh;
-    }
 }
-
+ 
 div {
     padding:0px;
     margin:0px;
@@ -228,7 +209,7 @@ div {
 }
  
 
-@media screen and (max-width: 544px) {
+@media screen and (max-width: 600px) {
     .hidden-xs-down {
        display: none !important;
     } 

@@ -8,6 +8,7 @@ import Header from './Header'
 import { Tabs, Tab } from 'material-ui/Tabs'
 import Paper from 'material-ui/Paper'
 import SwipeableViews from 'react-swipeable-views'
+import { HEADER_FONT_COLOR, BASE_COLOR2, BASE_COLOR1 } from '../constants'
 
 class SongsIndex extends Component {
 
@@ -19,7 +20,6 @@ class SongsIndex extends Component {
   }
 
   handleChange = (value) => {
-    console.log('value')
     this.setState({
       slideIndex: value
     })
@@ -38,35 +38,43 @@ class SongsIndex extends Component {
           </div>
         </div>
       )
+      
     } else if (error) {
       return <div className='alert alert-danger'>Error: {error.message}</div>
     } else {
+
       return (
         <div style={{ 'margin' : '0', 'width' : 'inherit' }} >
           <Header />
 
-          <div style={{ 'margin' : '0', 'width' : 'inherit' }} >
+          <div style={{ 'backgroundColor' : BASE_COLOR2, 'margin' : '0', 'width' : 'inherit' }} >
             <MuiThemeProvider>
               <Paper zDepth={2} style={{ 'height' : 'inherit', 'width' : 'inherit' }}>
+               
                 <Tabs onChange={this.handleChange}
-                  value={this.state.slideIndex}>
-                  <Tab style={{ 'backgroundColor' : '#FF5722' }}
+                  value={this.state.slideIndex}> 
+                  
+                  <Tab style={{ 'color' : HEADER_FONT_COLOR, 'backgroundColor' : BASE_COLOR1 }}
                     label='Songs' value={0} />
-                  <Tab style={{ 'backgroundColor' : '#FF5722' }}
+                  <Tab style={{ 'color' : HEADER_FONT_COLOR, 'backgroundColor' : BASE_COLOR1 }}
                     label='Artists' value={1} />
+                
                 </Tabs>
+             
               </Paper>
 
             </MuiThemeProvider>
+           
             <SwipeableViews
               index={this.state.slideIndex}
-              onChangeIndex={this.handleChange}>
+              onChangeIndex={this.handleChange} style={{'backgroundColor' : BASE_COLOR2 }}>
 
-              <div>
+              <div >
                 <SongsList songs={songs} />
               </div>
               <div>
                 Artists
+                Coming soon...
              </div>
             </SwipeableViews>
           </div>

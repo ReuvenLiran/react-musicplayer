@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import AppBar from 'material-ui/AppBar'
-import { DEEP_ORANGE } from '../constants'
+import { HEADER_FONT_COLOR, BASE_COLOR1 } from '../constants'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 // import SwipeableViews from 'react-swipeable-views'
 
@@ -11,7 +11,6 @@ class Header extends Component {
     this.state = {
       slideIndex: 0
     }
-    console.log('DEEP_ORANGE', DEEP_ORANGE)
   }
 
   handleChange = (value) => {
@@ -26,8 +25,8 @@ class Header extends Component {
         <MuiThemeProvider>
           <AppBar
             title='Music Libary'
-            style={{ 'backgroundColor' : DEEP_ORANGE }}
-            iconClassNameRight='muidocs-icon-navigation-expand-more'
+            showMenuIconButton={false}
+            style={{ 'color' : HEADER_FONT_COLOR ,'backgroundColor' : BASE_COLOR1 }}
          />
         </MuiThemeProvider>
       </div>

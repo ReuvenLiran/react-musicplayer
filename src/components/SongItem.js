@@ -4,6 +4,7 @@ import classnames from 'classnames'
 import { TableRow, TableRowColumn } from 'material-ui/Table'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import autobind from 'autobind-decorator'
+import { TABLE_FONT_COLOR } from '../constants'
 
 class SongItem extends Component {
 
@@ -28,9 +29,7 @@ class SongItem extends Component {
   }
 
   @autobind
-  rowClicked () {
-    // this.props.setActiveSong(song)
-    console.log(this.props.song)
+  handleClick () {
     this.props.setActiveSong(this.props.song)
   }
 
@@ -38,7 +37,7 @@ class SongItem extends Component {
     const { song, activeSong } = this.props
 
     return (
-      <TableRow key={song._id} onClick={this.rowClicked} style={{ 'fontSize' : '14px' }}>
+      <TableRow key={song._id} onClick={this.handleClick} style={{ 'fontSize' : '14px', 'color' : TABLE_FONT_COLOR }}>
         <TableRowColumn>
           <div style={{ 'display' : 'inline-block', 'verticalAlign' :'middle' }}>
             <img src={'data:image/png;base64,' + song.cover}
