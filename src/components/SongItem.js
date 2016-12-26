@@ -1,8 +1,6 @@
 import '../styles/SongItem.scss'
 import React, { Component, PropTypes } from 'react'
-import classnames from 'classnames'
 import { TableRow, TableRowColumn } from 'material-ui/Table'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import autobind from 'autobind-decorator'
 import { TABLE_FONT_COLOR } from '../constants'
 
@@ -34,7 +32,7 @@ class SongItem extends Component {
   }
 
   render () {
-    const { song, activeSong } = this.props
+    const { song } = this.props
 
     return (
       <TableRow key={song._id} onClick={this.handleClick} style={{ 'fontSize' : '14px', 'color' : TABLE_FONT_COLOR }}>

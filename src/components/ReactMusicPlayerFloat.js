@@ -137,7 +137,7 @@ class ReactMusicPlayerFloat extends Component {
 
   render () {
     this.setSong()
-    const { activeSong, play, progress } = this.state
+    const { activeSong, progress } = this.state
 
     let generalClass = 'material-icons vertical-align player-btn medium'
     let volumeClass = classnames(generalClass)
@@ -154,14 +154,18 @@ class ReactMusicPlayerFloat extends Component {
 
         <MuiThemeProvider>
 
-          <div style={{ 'zIndex' : '2', 'top' : '0', 'left' : '-2%', 'height' : '6px', 'width': '100%' }} onClick={this.setProgress}>
+          <div style={{ 'zIndex' : '2', 'top' : '0', 'left' : '-2%', 'height' : '6px', 'width': '100%' }}
+            onClick={this.setProgress}>
             <LinearProgress color={BASE_COLOR1} mode='determinate' value={progress} />
           </div>
         </MuiThemeProvider>
         <div style={{ 'display' : 'flex', 'height' : '100%' }}>
 
-          <div className='player-cover'
-            style={{ 'height' : '75px', 'width' : '86px', 'backgroundImage': 'url("data:image/png;base64,' + activeSong.cover + '")' }} />
+          <div className='player-cover' style={{
+            'height' : '75px',
+            'width' : '86px',
+            'backgroundImage': 'url("data:image/png;base64,' + activeSong.cover + '")'
+          }} />
 
           <div style={{ 'display' : 'flex', 'flex' : '1', 'width' : '33vw' }} >
             <div className='artist-info'>

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import AppBar from 'material-ui/AppBar'
 import { HEADER_FONT_COLOR, BASE_COLOR1 } from '../constants'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-// import SwipeableViews from 'react-swipeable-views'
 
 class Header extends Component {
 
@@ -26,7 +25,7 @@ class Header extends Component {
           <AppBar
             title='Music Libary'
             showMenuIconButton={false}
-            style={{ 'color' : HEADER_FONT_COLOR ,'backgroundColor' : BASE_COLOR1 }}
+            style={{ 'color' : HEADER_FONT_COLOR, 'backgroundColor' : BASE_COLOR1 }}
          />
         </MuiThemeProvider>
       </div>

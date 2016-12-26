@@ -3,8 +3,8 @@ import React, { Component, PropTypes } from 'react'
 import SongItem from '../containers/SongItemContainer'
 import { Card } from 'material-ui/Card'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table'
-import { TABLE_HEADER_FONT_COLOR, TABLE_FONT_COLOR, BASE_COLOR3 } from '../constants'
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow } from 'material-ui/Table'
+import { TABLE_HEADER_FONT_COLOR, BASE_COLOR3 } from '../constants'
 
 class SongsList extends Component {
 
@@ -16,8 +16,8 @@ class SongsList extends Component {
   }
 
   tableHeaderStyle = {
-     'color' : TABLE_HEADER_FONT_COLOR, 
-     'fontSize' : '18px'  
+    'color' : TABLE_HEADER_FONT_COLOR,
+    'fontSize' : '18px'
   }
 
   renderSongs (songs) {
@@ -46,7 +46,9 @@ class SongsList extends Component {
                 <TableRow>
                   <TableHeaderColumn style={this.tableHeaderStyle} >Name</TableHeaderColumn>
                   <TableHeaderColumn style={this.tableHeaderStyle}>Artist</TableHeaderColumn>
-                  <TableHeaderColumn style={this.tableHeaderStyle}><i className='material-icons'>access_time</i></TableHeaderColumn>
+                  <TableHeaderColumn style={this.tableHeaderStyle}>
+                    <i className='material-icons'>access_time</i>
+                  </TableHeaderColumn>
                 </TableRow>
 
               </TableHeader>
