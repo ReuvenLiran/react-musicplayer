@@ -38,7 +38,7 @@ app.use(function (req, res, next) {
   next()
 })
 
-var staticPath = 'music_files'
+var staticPath = global.music_files
 
 app.use(logger('dev'))
 app.use(bodyParser.json())
