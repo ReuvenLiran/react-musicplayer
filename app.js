@@ -3,7 +3,7 @@ var logger = require('morgan')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var path = require('path');
-var jwt = require('jsonwebtoken')
+//var jwt = require('jsonwebtoken')
 
 global.music_files = path.join(__dirname, 'music_files')
 
@@ -44,7 +44,7 @@ app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
-
+/*
 // middleware that checks if JWT token exists and verifies it if it does exist.
 // In all the future routes, this helps to know if the request is authenticated or not.
 app.use(function (req, res, next) {
@@ -65,6 +65,7 @@ app.use(function (req, res, next) {
     next()
   }
 })
+*/
 
 app.use('/api/', songs)
 // app.use('/api/', fileUpdater);

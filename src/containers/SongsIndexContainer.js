@@ -14,9 +14,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchSongs: () => {
       dispatch(fetchSongs()).then((response) => {
-        console.log('SongsIndexContainer')
         dispatch(fetchSongsSuccess(response.payload))
-        console.log('SongsIndexContainer')
         dispatch(setActiveSong(response.payload.data[0]))
       })
     }

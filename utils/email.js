@@ -1,3 +1,4 @@
+/*
 var postmark = require("postmark")(process.env.POSTMARK_API_TOKEN);
 var async = require('async');
 var crypto = require('crypto');
@@ -65,3 +66,4 @@ function sendWelcomeEmail(user, host, finalCB) {
 module.exports = {
   sendWelcomeEmail: sendWelcomeEmail
 };
+*/

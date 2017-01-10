@@ -6,10 +6,27 @@ import { TABLE_FONT_COLOR } from '../constants'
 
 class SongItem extends Component {
 
-/*
-  handleClick (song) {
-    this.props.setActiveSong(song)
-  } */
+  constructor (props) {
+    super(props)
+    this.song = this.props.song
+    let duration
+    let thumbnail
+
+    let artists = this.alignArtists(this.song.artists)
+
+    if (this.song.artists[0] === 'Youtube') {
+      duration = this.song.duration
+      thumbnail = this.song.thumbnail
+    } else {
+      duration = this.secondsToMinutes(this.song.duration)
+      thumbnail = 'data:image/png;base64,' + this.song.thumbnail
+    }
+    this.state = {
+      artists: artists,
+      duration: duration,
+      thumbnail: thumbnail
+    }
+  }
 
   secondsToMinutes (s) {
     var m = Math.floor(s / 60) // Get remaining minutes
@@ -28,34 +45,32 @@ class SongItem extends Component {
 
   @autobind
   handleClick () {
-    this.props.setActiveSong(this.props.song)
+    this.props.setActiveSong(this.song)
   }
 
   render () {
-    const { song } = this.props
-
     return (
-      <TableRow key={song._id} onClick={this.handleClick} style={{ 'fontSize' : '14px', 'color' : TABLE_FONT_COLOR }}>
+      <TableRow key={this.song._id} onClick={this.handleClick} style={{ 'fontSize' : '14px', 'color' : TABLE_FONT_COLOR }}>
         <TableRowColumn>
           <div style={{ 'display' : 'inline-block', 'verticalAlign' :'middle' }}>
-            <img src={'data:image/png;base64,' + song.cover}
+            <img src={this.state.thumbnail}
               height='40' width='40' style={{ 'marginRight' : '2vh' }} />
           </div>
           <div style={{ 'maxWidth' : '75%', 'display' : 'inline-block', 'verticalAlign' :'middle' }}>
             <div>
-              {song.track_name}
+              {this.song.title}
             </div>
             <div className='div-hidden display-xs-down'
               style={{ 'fontSize' : '10px' }}>
               <span className='over-flow' style={{ 'maxWidth' : '100%' }}>
-                {this.alignArtists(song.artists)}
+                {this.state.artists}
               </span>
-              <span>&nbsp;&#8226; {this.secondsToMinutes(song.track_length)} </span>
+              <span>&nbsp;&#8226; {this.state.duration} </span>
             </div>
           </div>
         </TableRowColumn>
-        <TableRowColumn className='hidden-xs-down'>{this.alignArtists(song.artists)}</TableRowColumn>
-        <TableRowColumn className='hidden-xs-down'>{this.secondsToMinutes(song.track_length)}</TableRowColumn>
+        <TableRowColumn className='hidden-xs-down'>{this.state.artists}</TableRowColumn>
+        <TableRowColumn className='hidden-xs-down'>{this.state.duration}</TableRowColumn>
       </TableRow>
     )
   }

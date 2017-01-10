@@ -8,20 +8,36 @@ import { ROOT_URL, BASE_COLOR1 } from '../constants'
 
 class ReactMusicPlayerFloat extends Component {
 
-  state = {
-    activeSong: this.props.activeSong,
-    active: this.props.activeSong,
-    current: 0,
-    progress: 0,
-    random: false,
-    repeat: false,
-    mute: false,
-    play: this.props.autoplay || false,
-    songs: this.props.songs,
-    btnTypeMute: 'volume_off',
-    btnTypePlay: 'play_arrow'
-  }
+  constructor (props) {
+    super(props)
+    this.song = this.props.song
+    let metaData = { }
 
+    metaData.artists = this.alignArtists(this.song.artists)
+    metaData.title = this.song.title
+
+    if (metaData.artists[0] === 'Youtube') {
+     // metaData.duration = this.song.duration
+      metaData.thumbnail = this.song.thumbnail
+    } else {
+      // metaData.duration = this.secondsToMinutes(this.song.duration)
+      metaData.thumbnail = 'data:image/png;base64,' + this.song.thumbnail
+    }
+    this.state = {
+      metaData: metaData,
+      activeSong: this.props.activeSong,
+      active: this.props.activeSong,
+      current: 0,
+      progress: 0,
+      random: false,
+      repeat: false,
+      mute: false,
+      play: this.props.autoplay || false,
+      songs: this.props.songs,
+      btnTypeMute: 'volume_off',
+      btnTypePlay: 'play_arrow'
+    }
+  }
   componentDidMount = () => {
     let playerElement = this.refs.player
     playerElement.addEventListener('timeupdate', this.updateProgress)
@@ -122,6 +138,17 @@ class ReactMusicPlayerFloat extends Component {
     if (this.props.activeSong !== this.state.activeSong) {
       this.setState({ active: this.props.activeSong })
       this.setState({ activeSong: this.props.activeSong })
+
+      let metaData = {}
+      metaData.artists = this.alignArtists(this.props.activeSong.artists)
+      metaData.title = this.props.activeSong.title
+
+      if (metaData.artists[0] === 'Youtube') {
+        metaData.thumbnail = this.props.activeSong.thumbnail
+      } else {
+        metaData.thumbnail = 'data:image/png;base64,' + this.props.activeSong.thumbnail
+      }
+      this.setState({ metaData: metaData })
     }
   }
 
@@ -161,16 +188,15 @@ class ReactMusicPlayerFloat extends Component {
         </MuiThemeProvider>
         <div style={{ 'display' : 'flex', 'height' : '100%' }}>
 
-          <div className='player-cover' style={{
+          <img className='player-cover' style={{
             'height' : '75px',
-            'width' : '86px',
-            'backgroundImage': 'url("data:image/png;base64,' + activeSong.cover + '")'
-          }} />
+            'width' : '86px' }}
+            src={this.state.metaData.thumbnail} />
 
           <div style={{ 'display' : 'flex', 'flex' : '1', 'width' : '33vw' }} >
             <div className='artist-info'>
-              <h1 style={{ 'fontSize' : '12px' }} className='artist-song-name'>{activeSong.track_name}</h1>
-              <h1 style={{ 'fontSize' : '10px' }} className='artist-name'>{this.alignArtists(activeSong.artists)}</h1>
+              <h1 style={{ 'fontSize' : '12px' }} className='artist-song-name'>{this.state.metaData.title}</h1>
+              <h1 style={{ 'fontSize' : '10px' }} className='artist-name'>{this.state.metaData.artists}</h1>
             </div>
           </div>
 

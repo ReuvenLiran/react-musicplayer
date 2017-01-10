@@ -135,7 +135,7 @@ function getRecordingMetadata (oldMetadata) {
 
 
 function getMoreDetails (oldMetadata) {
-  var trackTitle = oldMetadata.trackTitle.replace(/ /g, '%20').replace(/_/g, '%20').replace(/-/g, '%20')
+  var title = oldMetadata.title.replace(/ /g, '%20').replace(/_/g, '%20').replace(/-/g, '%20')
                 .replace(/\.[^/.]+$/, '')
 
   var artist = oldMetadata.artists[0].replace(/ /g, '%20').replace(/_/g, '%20').replace(/-/g, '%20')
@@ -144,7 +144,7 @@ function getMoreDetails (oldMetadata) {
   var url = 'https://api.musixmatch.com/ws/1.1/track.search?apikey=' +
             process.env.MUSIXMATCH_API +
             '&format=json&q_track=' +
-            trackTitle +
+            title +
             '&q_artist=' +
             artist +
            '&quorum_factor=1'
@@ -155,10 +155,23 @@ function getMoreDetails (oldMetadata) {
  
       if (!error && response.statusCode === 200) {
         var mBody = JSON.parse(body);
+        let track = mBody.message.body.track_list[0].track;
+
+        let metadata = {
+          id: oldMetadata.id,
+          file: oldMetadata.file,
+          title: oldMetadata.title,
+          artists: oldMetadata.artists,
+          duration: track.track_length,
+          album: track.album_name,
+          firstRealseDate: track.first_release_date,
+          musicGenreList: track.primary_genres.music_genre_list
+        }
+        /*
         var metadata = {
           metadata: mBody.message.body.track_list[0].track,
           oldMetadata: oldMetadata
-        }
+        }*/
         resolve(metadata)
      } else {
         console.log('error1 ' + error)
@@ -169,13 +182,13 @@ function getMoreDetails (oldMetadata) {
   })
 }
 
-function getTrackCover (trackName, artists) {
+function getThumbnail (title, artists) {
   var url = 'https://www.googleapis.com/customsearch/v1?key=' +
             process.env.GOOGLE_API +
             '&cx=' +
             process.env.GOOGLE_SEARCH_ENGINE +
             '&q=' +
-            trackName +
+            title +
             ' ' +
             artists +
             '&searchType=image'
@@ -193,7 +206,7 @@ function getTrackCover (trackName, artists) {
         var mBody = JSON.parse(body)
         var coverUrl = mBody.items[0].link
 
-        getCoverBuffer(coverUrl).then(
+        getThumbnailBuffer(coverUrl).then(
               function (data) {
                 resolve(data)
               }, function (err) {
@@ -204,15 +217,14 @@ function getTrackCover (trackName, artists) {
         resolve(GOOGLE_API_LIMIT_EXCEEDED)
       } else {
       
-        console.log('error2 ' + error)
+        console.log(error)
         reject(error);
       }
-    
     });
   })
 }
 
-function getCoverBuffer (coverUrl) {
+function getThumbnailBuffer (coverUrl) {
   return new Promise((resolve, reject) => {
     var request = require('request').defaults({ encoding: null });
 
@@ -225,32 +237,32 @@ function getCoverBuffer (coverUrl) {
 }
 
 function writeTag (mData) { 
-  var cover
-  var songBuffer = fs.readFileSync(mData.oldMetadata.file)
+  let thumbnail
+  var songBuffer = fs.readFileSync(mData.file)
 
   var writer = new ID3Writer(songBuffer)
-  writer.setFrame('TIT2', mData.oldMetadata.trackTitle)
-          .setFrame('TPE1', [mData.oldMetadata.artists])
-          .setFrame('TPE2', mData.oldMetadata.artists)
-          .setFrame('TALB', mData.metadata.album_name)
-          .setFrame('TYER', mData.metadata.first_release_date.substring(0,4)) // get year
-          .setFrame('TLEN', mData.metadata.track_length * 1000) //milliseconds
-          .setFrame('TCON', mData.metadata.primary_genres.music_genre_list)
+  writer.setFrame('TIT2', mData.title)
+          .setFrame('TPE1', [mData.artists])
+          .setFrame('TPE2', mData.artists)
+          .setFrame('TALB', mData.album)
+          .setFrame('TYER', mData.firstRealseDate.substring(0, 4)) // get year
+          .setFrame('TLEN', mData.duration * 1000) //milliseconds
+          .setFrame('TCON', mData.musicGenreList)
           .setFrame('USLT', 'This is unsychronised lyrics')        
 
-  if (mData.cover != GOOGLE_API_LIMIT_EXCEEDED){
-    writer.setFrame('APIC', mData.cover)
-    cover = mData.cover.toString('base64')
+  if (mData.thumbnail != GOOGLE_API_LIMIT_EXCEEDED){
+    writer.setFrame('APIC', mData.thumbnail)
+    thumbnail = mData.thumbnail.toString('base64')
   } else {
-    cover = GOOGLE_API_LIMIT_EXCEEDED
+    thumbnail = GOOGLE_API_LIMIT_EXCEEDED
   }
 
   writer.addTag();
 
   var taggedSongBuffer = new Buffer(writer.arrayBuffer)
-  fs.writeFileSync(mData.oldMetadata.file, taggedSongBuffer)
+  fs.writeFileSync(mData.file, taggedSongBuffer)
 
-  var type = mime.lookup(mData.oldMetadata.file)
+  var type = mime.lookup(mData.file)
   console.log(type)
   if (type === AUDIO_MP3) {
     type = EXTENSION_MP3
@@ -259,24 +271,24 @@ function writeTag (mData) {
   }
   console.log(type, AUDIO_FLAC)
 
-  var newName = mData.oldMetadata.trackTitle +
+  var newName = mData.title +
                ' - ' +
-               mData.oldMetadata.artists +
+               mData.artists +
                type
 
-  fs.rename(mData.oldMetadata.file, path + '/' + newName)
+  fs.renameSync(mData.file, path + '/' + newName)
 
   console.log('write')
 
-  return { _id: mData.oldMetadata.trackId,
-    file:newName,
-    track_name:mData.oldMetadata.trackTitle,
-    album_name:mData.metadata.album_name,
-    artists:mData.oldMetadata.artists,
-    year: mData.metadata.first_release_date.substring(0, 4),
-    track_length:mData.metadata.track_length,
-    music_genre_list:mData.metadata.primary_genres.music_genre_list,
-    cover:cover }
+  return { _id: mData.id,
+    file: newName,
+    title: mData.title,
+    album: mData.album,
+    artists: mData.artists,
+    year: mData.firstRealseDate.substring(0, 4),
+    duration: mData.duration,
+    musicGenreList: mData.musicGenreList,
+    thumbnail:thumbnail }
 }
 
 function songGetAndUpdateData (file) {
@@ -292,8 +304,8 @@ function songGetAndUpdateData (file) {
         getRecordingMetadata(data)
           .then(function (data) {
             var metadata = {
-              trackId: data.metadata.id,
-              trackTitle: data.metadata.title,
+              id: data.metadata.id,
+              title: data.metadata.title,
               artists: [],
               file: data.file,
               fingerPrint: data.fingerPrint
@@ -307,11 +319,11 @@ function songGetAndUpdateData (file) {
             }
         
             Promise.all([ getMoreDetails(metadata),
-              getTrackCover(metadata.trackTitle,
+              getThumbnail(metadata.title,
                             metadata.artists) ])
 
               .then(values => {
-                values[0].cover = values[1]
+                values[0].thumbnail = values[1]
                 var result = writeTag(values[0])
 
                 var pos = docsSongs.findIndex(x => x._id == result._id)
@@ -339,7 +351,7 @@ function songGetAndUpdateData (file) {
 function updateSongCover (fileData){
   return new Promise((resolve, reject) => {
 
-    getTrackCover(fileData.track_name, fileData.artists)
+    getThumbnail(fileData.track_name, fileData.artists)
       .then(values => {
         console.log(values);
         if (values == GOOGLE_API_LIMIT_EXCEEDED){
@@ -414,10 +426,10 @@ function main (docsSongs) {
     
       co(function*() {  
           
-        for (insert of resJson.insert) {
+        for (let insert of resJson.insert) {
           bulkWrite.push({ insertOne: { document: insert } });
         }
-        for (update of resJson.update) {
+        for (let update of resJson.update) {
           bulkWrite.push({ updateOne: { filter: {_id: update._id}, update: update } });
         }
         if (Object.keys(bulkWrite).length > 0) {

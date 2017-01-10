@@ -1,3 +1,4 @@
+/*
 var jwt = require('jsonwebtoken');
 
 function generateToken(user) {
@@ -75,3 +76,4 @@ module.exports = {
   getCleanUser: getCleanUser,
   generateToken: generateToken
 }
+*/

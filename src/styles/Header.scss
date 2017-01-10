@@ -1,0 +1,110 @@
+@import 'base';
+@import '~normalize.css/normalize';
+ 
+input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+.autocomplete-content {
+     position: absolute;
+     z-index: 2 !important;
+     background-color: green;
+     width: 100%;
+     color: $black-pearl;
+     margin-top: -20px;
+     
+     //background-color: black;
+} 
+ 
+.app-header {
+    background-color: $nile-blue;
+    z-index: 10;
+}
+ 
+
+nav .brand-logo {
+   position: relative;
+   width: 25%;
+   vertical-align: 50%;
+   color: $wild-sand;
+
+   &.hidden {
+       display: none !important;
+    }
+}
+nav .brand-logo:before {
+   content: "Music Libary";
+}
+
+#search-btn:before {
+    content: "search";
+    color: $wild-sand; 
+}
+
+nav #search {
+    background-color: inherit;
+}
+nav #search-form{ 
+    width: 75%;
+    vertical-align: 50%;
+    position: relative;
+    display: inline-block;
+    background-color: lighten($nile-blue, 6%);
+   
+    &.full-width {
+        width: 100%;
+        background-color: $wild-sand;
+        -webkit-transition: background-color 400ms linear;
+        -moz-transition: background-color  400ms linear;
+        -ms-transition: background-color 400ms linear;
+        transition: background-color 400ms linear;
+    }
+}
+
+#search:focus + #search-btn:before {
+    content: "close";
+    vertical-align: 50%;
+    color: $black-pearl;
+} 
+
+#search-form > #search:focus {
+  //& {
+    width: 100% !important;
+    left: 0;
+    //background-color: black;
+    //}
+}
+/*
+#search:focus {
+  #search-form & {
+    width: 100% !important;
+    left: 0;
+    //background-color: black;
+
+  ///background-color: lighten($nile-blue, 60%);
+}*/
+
+@media only screen and (max-width: 992px)
+{   
+    nav .brand-logo {
+        width: 20% !important;
+        left: 11% !important;
+        margin-right: 5%;
+        display: inline-block;
+    }
+    nav .brand-logo:before {
+        content: "" !important;
+    }   
+
+    nav #search-form {
+        vertical-align: top;
+        display: inline-block;
+    }
+}
+
+@keyframes example {
+    0%   {display: none}
+    25%  {display: inline-block}
+    50%  {background-color:blue; left:200px; top:200px;}
+    75%  {background-color:green; left:0px; top:200px;}
+    100% {background-color: $wild-sand;}
+}
