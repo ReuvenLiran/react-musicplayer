@@ -30,12 +30,18 @@ button:focus,
 .player-cover {
     float : left;
     position: relative;
-    height: inherit;
-    width: 10vw;
+    height: 75px;
+    width: 86px;
     margin-right: 2vw;
     background-position: top center;
     background-size: cover;
     transition: height .4s;
+}
+
+.artist-container {
+    display : flex; 
+    flex: 1;
+    width: 33vw;
 }
 
 .artist-info {
@@ -45,7 +51,7 @@ button:focus,
     top: 12%;
     position: absolute;
     width: inherit;
-    height: 70%;
+    height: 75%;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -54,19 +60,25 @@ button:focus,
 
 .artist-name,
 .artist-song-name {
+    display: block;
     color:#f7f6f7;
     margin: 0 auto;
     position: relative;
     text-overflow: ellipsis;
     white-space: pre-wrap;
     overflow: hidden;
-    font-family: 'Oswald', sans-serif; margin-left: 5%;
+    font-family: Roboto, sans-serif;
+    margin-left: 5%;
 }
 
+.artist-name {
+    font-size: 10px;
+}
 .artist-song-name {
+    font-size: 12px;
     margin-bottom: 4%;
 }
-
+ 
 .player-buttons {
     display: inline-flex;
     justify-content: space-between;
@@ -114,7 +126,7 @@ button:focus,
   .player-container {
      //height : 8vmax;
       height : 70px;
-   } 
+   } /*
     .artist-name,
     .artist-song-name {
         font-size : 1.2vmax;
@@ -122,7 +134,7 @@ button:focus,
 
  .player-cover {
      width: 15vh;
- }
+ }*/
  .player-btn{
     margin-left: 2vh;     
  }
@@ -132,14 +144,16 @@ button:focus,
 @media screen and (orientation: portrait) {
   .player-container {
      height : 75px;
-  } 
+  }
+  /* 
  .artist-name,
  .artist-song-name {
     font-size : 1.5vmin;
- } 
+ } */
+ /*
  .player-cover {
      width: 15vw;
- }
+ }*/
  .player-btn{
     //  margin-left: 2vw;
  
@@ -170,38 +184,28 @@ div {
 .round-button-circle:hover {
 	background:#FF5722;
 }
-.round-button-img {
-   //display:block;
-	//float:left;
- //	width:100%;
-     margin-left: auto;
-	margin-right: auto;
-	 display: block;
-//	padding-top:50%;
-//    padding-bottom:50%;
-	//line-height:1em;
-	//margin-top:-0.5em;
-    
-	//text-align:center;
-	//color:#e2eaf3;
-   //font-family:Verdana;
-    //font-size:1.2em;
-    //font-weight:bold;
-    //text-decoration:none;
-  // @include vertical-align();
-}
  
-#sp1 {  
+.player-options {
+    width : 20%; 
     height: inherit;
-    display: inline-block;
-   // top: -40px;
-   // @include vertical-align();
+     display : inline-block;
 }
-.dv1 {
-     display: inline-block;
-    //align-items: center;
-    height: inherit;
-     //   @include vertical-align();
+
+.player-buttons {
+   display : inline-block;
+   width : 33vw; 
+}
+
+.progress-bar {
+    z-index: 2;
+    top: 0;
+    left: -2;
+    height: 6px;
+    width: 100%;
+}
+.player-sub-container {
+    display: flex; 
+    height: 100%;
 }
 
 .vertical-align{
@@ -216,4 +220,8 @@ div {
     .display-xs-down {
        display: block !important;
     }
+}
+
+footer iframe {
+    display: none;
 }

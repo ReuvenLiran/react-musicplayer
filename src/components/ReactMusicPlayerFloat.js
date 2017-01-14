@@ -4,26 +4,36 @@ import classnames from 'classnames'
 import shuffle from 'shuffle-array'
 import LinearProgress from 'material-ui/LinearProgress'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import { ROOT_URL, BASE_COLOR1 } from '../constants'
+import { BASE_COLOR1, YOUTUBE_CONSTS } from '../constants'
+import Player from '../Player'
 
+var youtubePlayer
+var player
+var loadYT1
 class ReactMusicPlayerFloat extends Component {
 
   constructor (props) {
     super(props)
+
     this.song = this.props.song
     let metaData = { }
 
+    this.loadYT
+    this.YT
     metaData.artists = this.alignArtists(this.song.artists)
     metaData.title = this.song.title
-
-    if (metaData.artists[0] === 'Youtube') {
-     // metaData.duration = this.song.duration
+    if (metaData.artists === 'Youtube') {
       metaData.thumbnail = this.song.thumbnail
+      this.src = this.song.id
+      metaData.type = YOUTUBE_CONSTS.YOUTUBE
     } else {
-      // metaData.duration = this.secondsToMinutes(this.song.duration)
       metaData.thumbnail = 'data:image/png;base64,' + this.song.thumbnail
+      this.src = this.song.file
+      metaData.type = 'LOCAL'
     }
+
     this.state = {
+      player: {},
       metaData: metaData,
       activeSong: this.props.activeSong,
       active: this.props.activeSong,
@@ -38,52 +48,103 @@ class ReactMusicPlayerFloat extends Component {
       btnTypePlay: 'play_arrow'
     }
   }
+
   componentDidMount = () => {
-    let playerElement = this.refs.player
-    playerElement.addEventListener('timeupdate', this.updateProgress)
-    playerElement.addEventListener('ended', this.end)
-    playerElement.addEventListener('error', this.next)
+    if (!loadYT1) {
+      this.loadYoutubeAPI()
+    }
+
+    if (this.state.metaData.type !== YOUTUBE_CONSTS.YOUTUBE) {
+      player = new Player(this.refs.player, this.state.metaData.type, this.src)
+
+      player.addEventListener('timeupdate', this.updateProgress)
+      player.addEventListener('ended', this.end)
+      player.addEventListener('error', this.next)
+    } else if (this.state.metaData.type === YOUTUBE_CONSTS.YOUTUBE) {
+
+      loadYT1.then((YT) => {
+        youtubePlayer = new YT.Player(this.youtubePlayerAnchor, {
+          height: 0,
+          width: 0,
+          videoId: this.src,
+          events: {
+            onReady: this.onReady,
+            onStateChange: this.onPlayerStateChange
+          }
+        })
+        player = new Player(youtubePlayer, YOUTUBE_CONSTS.YOUTUBE, this.src)
+      })
+    }
+  }
+  loadYoutubeAPI = () => {
+    loadYT1 = new Promise((resolve) => {
+      console.log('loadYT Loading...')
+      const tag = document.createElement('script')
+      tag.src = YOUTUBE_CONSTS.API_URL
+      const firstScriptTag = document.getElementsByTagName('script')[0]
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+      window.onYouTubeIframeAPIReady = () => { resolve(window.YT); console.log('YT') }
+    })
   }
 
-  componentWillUnmount = () => {
-    let playerElement = this.refs.player
-    playerElement.removeEventListener('timeupdate', this.updateProgress)
-    playerElement.removeEventListener('ended', this.end)
-    playerElement.removeEventListener('error', this.next)
+  onReady = (e) => {
+    console.log('onReady')
+    player.pause()
+  }
+  onPlayerStateChange = (e) => {
+    console.log('e', e.data)
+
+    if (e.data === 0) {
+      this.end()
+    }
+
+    if (e.data !== 1 && this.interval) {
+      clearInterval(this.interval)
+      delete this.interval
+    } else {
+      this.interval = setInterval(this.updateProgress, 1000)
+    }
+  }
+
+  updateProgress = () => {
+    let duration = player.getDuration()
+    let currentTime = player.getCurrentTime()
+    let progress = (currentTime * 100) / duration
+    this.setState({ progress: progress })
   }
 
   setProgress = (e) => {
-    let target = e.target.nodeName === 'SPAN' ? e.target.parentNode : e.target
+    let target = e.target.parentNode // e.target.nodeName === 'SPAN' ? e.target.parentNode : e.target
     let width = target.clientWidth
     let rect = target.getBoundingClientRect()
     let offsetX = e.clientX - rect.left
-    let duration = this.refs.player.duration
+
+    let duration = player.getDuration()
     let currentTime = (duration * offsetX) / width
     let progress = (currentTime * 100) / duration
 
-    this.refs.player.currentTime = currentTime
+    player.setCurrentTime(currentTime)
     this.setState({ progress: progress })
     this.play()
   }
 
-  updateProgress = () => {
-    let duration = this.refs.player.duration
-    let currentTime = this.refs.player.currentTime
-    let progress = (currentTime * 100) / duration
-
-    this.setState({ progress: progress })
+  componentWillUnmount = () => {
+    if (player.type !== YOUTUBE_CONSTS.YOUTUBE) {
+      player.removeEventListener('timeupdate', this.updateProgress)
+      player.removeEventListener('ended', this.end)
+      player.removeEventListener('error', this.next)
+    }
   }
 
   play = () => {
-    this.setState({ play: true })
-    this.setState({ btnTypePlay : 'pause' })
-    this.refs.player.play()
+    this.setState({ play: true, btnTypePlay : 'pause' })
+    player.play()
   }
 
   pause = () => {
     this.setState({ play: false })
     this.setState({ btnTypePlay : 'play_arrow' })
-    this.refs.player.pause()
+    player.pause()
   }
 
   toggle = () => {
@@ -91,7 +152,7 @@ class ReactMusicPlayerFloat extends Component {
   }
 
   end = () => {
-    (this.state.repeat) ? this.play() : this.setState({ play: false })
+    (this.state.repeat) ? this.play() : this.next()
   }
 
   next = () => {
@@ -102,7 +163,7 @@ class ReactMusicPlayerFloat extends Component {
 
     this.setState({ current: current, active: active, progress: 0 })
     this.props.setActiveSong(active)
-    this.refs.player.src = active.file
+    player.setSrc(active.id || active.file)
     this.play()
   }
 
@@ -113,7 +174,7 @@ class ReactMusicPlayerFloat extends Component {
 
     this.setState({ current: current, active: active, progress: 0 })
     this.props.setActiveSong(active)
-    this.refs.player.src = active.file
+    player.setSrc(active.id || active.file)
     this.play()
   }
 
@@ -130,28 +191,36 @@ class ReactMusicPlayerFloat extends Component {
     let mute = this.state.mute
 
     this.setState({ mute: !this.state.mute })
-    this.refs.player.volume = (mute) ? 1 : 0
+    mute ? player.unMute() : player.mute()
     this.setState({ btnTypeMute: (mute ? 'volume_off' : 'volume_up') })
   }
 
-  setSong = () => {
-    if (this.props.activeSong !== this.state.activeSong) {
-      this.setState({ active: this.props.activeSong })
-      this.setState({ activeSong: this.props.activeSong })
+  setMetaData (song) {
+    let metaData = {}
+    metaData.artists = this.alignArtists(song.artists)
+    metaData.title = song.title
 
-      let metaData = {}
-      metaData.artists = this.alignArtists(this.props.activeSong.artists)
-      metaData.title = this.props.activeSong.title
-
-      if (metaData.artists[0] === 'Youtube') {
-        metaData.thumbnail = this.props.activeSong.thumbnail
-      } else {
-        metaData.thumbnail = 'data:image/png;base64,' + this.props.activeSong.thumbnail
-      }
-      this.setState({ metaData: metaData })
+    if (metaData.artists === 'Youtube') {
+      metaData.thumbnail = song.thumbnail
+      metaData.type = YOUTUBE_CONSTS.YOUTUBE
+      this.src = song.id
+    } else {
+      metaData.type = 'LOCAL'
+      metaData.thumbnail = 'data:image/png;base64,' + song.thumbnail
+      this.src = song.file
     }
+    console.log(player)
+    player.setSrc(this.src)
+    this.setState({ metaData: metaData })
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (this.props.activeSong !== nextProps.activeSong) {
+      this.setState({ active: nextProps.activeSong })
+      this.setState({ activeSong: nextProps.activeSong })
+      this.setMetaData(nextProps.activeSong)
+    }
+  }
   alignArtists (artists) {
     var strArtists = ''
     if (artists !== undefined) {
@@ -162,9 +231,23 @@ class ReactMusicPlayerFloat extends Component {
     return strArtists.slice(0, strArtists.length - 2)
   }
 
+  setSource (type) {
+    if (type !== YOUTUBE_CONSTS.YOUTUBE) {
+      return this.renderSource()
+    }
+  }
+
+  renderYoutubeIframe () {
+    return (
+      <div ref={(r) => { this.youtubePlayerAnchor = r }} />
+    )
+  }
+  renderSource () {
+    return <audio src={this.state.metaData.src} autoPlay={this.state.play} preload='auto' ref='player' />
+  }
   render () {
-    this.setSong()
-    const { activeSong, progress } = this.state
+    // this.setSong()
+    const { progress } = this.state
 
     let generalClass = 'material-icons vertical-align player-btn medium'
     let volumeClass = classnames(generalClass)
@@ -176,47 +259,39 @@ class ReactMusicPlayerFloat extends Component {
 
       <footer className='player-container' style={{ 'height' : '90px !important', 'width': '100%' }}>
 
-        <audio src={ROOT_URL + '/' + activeSong.file}
-          autoPlay={this.state.play} preload='auto' ref='player' />
+        {this.renderYoutubeIframe()}
+        {this.setSource(this.state.metaData.type)}
 
         <MuiThemeProvider>
-
-          <div style={{ 'zIndex' : '2', 'top' : '0', 'left' : '-2%', 'height' : '6px', 'width': '100%' }}
-            onClick={this.setProgress}>
+          <div className='progress-bar' onClick={this.setProgress}>
             <LinearProgress color={BASE_COLOR1} mode='determinate' value={progress} />
           </div>
         </MuiThemeProvider>
-        <div style={{ 'display' : 'flex', 'height' : '100%' }}>
 
-          <img className='player-cover' style={{
-            'height' : '75px',
-            'width' : '86px' }}
-            src={this.state.metaData.thumbnail} />
+        <div className='player-sub-container'>
 
-          <div style={{ 'display' : 'flex', 'flex' : '1', 'width' : '33vw' }} >
+          <img className='player-cover' src={this.state.metaData.thumbnail} />
+
+          <div className='artist-container'>
             <div className='artist-info'>
-              <h1 style={{ 'fontSize' : '12px' }} className='artist-song-name'>{this.state.metaData.title}</h1>
-              <h1 style={{ 'fontSize' : '10px' }} className='artist-name'>{this.state.metaData.artists}</h1>
+              <span className='artist-song-name'>{this.state.metaData.title}</span>
+              <span className='artist-name'>{this.state.metaData.artists}</span>
             </div>
           </div>
 
-          <div style={{ 'display' : 'inline-block', 'verticalAlign' : 'top', 'width' : '33vw' }} >
+          <div className='player-buttons' >
 
             <i className={skipClass} onClick={this.previous}>skip_previous</i>
-
             <i className='material-icons vertical-align player-btn play'
               onClick={this.toggle}>{this.state.btnTypePlay}</i>
-
             <i className={skipClass} onClick={this.next}>skip_next</i>
 
           </div>
 
-          <div className='dv1 hidden-xs-down' style={{ 'width' : '20%', 'display' : 'inline-block' }}>
+          <div className='player-options hidden-xs-down'>
 
             <i className={repeatClass} onClick={this.repeat}>loop</i>
-
             <i className={randomClass} onClick={this.randomize}>shuffle</i>
-
             <i className={volumeClass}
               onClick={this.toggleMute}> {this.state.btnTypeMute}</i>
           </div>

@@ -13,7 +13,6 @@ import { HEADER_FONT_COLOR, BASE_COLOR2, BASE_COLOR1 } from '../constants'
 class SongsIndex extends Component {
 
   componentWillMount () {
-    console.log('componentWillMount')
     this.props.fetchSongs()
     this.state = {
       slideIndex: 0
@@ -39,7 +38,6 @@ class SongsIndex extends Component {
 
   render () {
     const { songs, loading, error } = this.props.songsList
-    console.log('render', this.props.songsList)
     if (loading) {
       return (
         <div className='container'>

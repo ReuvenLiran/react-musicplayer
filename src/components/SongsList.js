@@ -30,7 +30,6 @@ class SongsList extends Component {
 
   render () {
     const { songs } = this.props
-    console.log('songList')
     return (
       <div className='container'>
         <MuiThemeProvider>

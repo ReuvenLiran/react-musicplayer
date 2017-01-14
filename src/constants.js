@@ -3,7 +3,13 @@ const ROOT =
       location.href.indexOf('localhost') > 0 ? 'http://localhost:' : 'http://192.168.5.102:'
 export const ROOT_URL = ROOT + PORT + '/'
 export const ROOT_URL_API = ROOT_URL + 'api'
-
+export const YOUTUBE_CONSTS = {
+  YOUTUBE: 'Youtube',
+  URL: 'http://www.youtube.com/embed/',
+  API: 'enablejsapi=1',
+  AUTOPLAY: 'autoplay=1',
+  API_URL: 'http://www.youtube.com/iframe_api'
+}
 export const BASE_COLOR1 = '#192d50'
 export const HEADER_FONT_COLOR = '#dfceba'
 export const BASE_COLOR2 = '#dfceba'
