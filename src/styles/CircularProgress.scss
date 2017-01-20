@@ -1,0 +1,12 @@
+@import 'base';
+@import '~normalize.css/normalize';
+
+#CircularProgress {
+    position: absolute;
+    right: 45%;
+    top: 40%;
+ }
+
+#CircularProgress .preloader-wrapper .spinner-layer {
+        border-color: $nile-blue;
+}

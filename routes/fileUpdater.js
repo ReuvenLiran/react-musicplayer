@@ -182,7 +182,7 @@ function getMoreDetails (oldMetadata) {
   })
 }
 
-function getThumbnail (title, artists) {
+function getAlbumCover (title, artists) {
   var url = 'https://www.googleapis.com/customsearch/v1?key=' +
             process.env.GOOGLE_API +
             '&cx=' +
@@ -204,9 +204,9 @@ function getThumbnail (title, artists) {
 
       if (!error && response.statusCode === 200) {
         var mBody = JSON.parse(body)
-        var coverUrl = mBody.items[0].link
+        var albumCoverUrl = mBody.items[0].link
 
-        getThumbnailBuffer(coverUrl).then(
+        getAlbumCoverBuffer(albumCoverUrl).then(
               function (data) {
                 resolve(data)
               }, function (err) {
@@ -224,7 +224,7 @@ function getThumbnail (title, artists) {
   })
 }
 
-function getThumbnailBuffer (coverUrl) {
+function getAlbumCoverBuffer (coverUrl) {
   return new Promise((resolve, reject) => {
     var request = require('request').defaults({ encoding: null });
 
@@ -237,7 +237,7 @@ function getThumbnailBuffer (coverUrl) {
 }
 
 function writeTag (mData) { 
-  let thumbnail
+  let albumCover
   var songBuffer = fs.readFileSync(mData.file)
 
   var writer = new ID3Writer(songBuffer)
@@ -250,11 +250,11 @@ function writeTag (mData) {
           .setFrame('TCON', mData.musicGenreList)
           .setFrame('USLT', 'This is unsychronised lyrics')        
 
-  if (mData.thumbnail != GOOGLE_API_LIMIT_EXCEEDED){
-    writer.setFrame('APIC', mData.thumbnail)
-    thumbnail = mData.thumbnail.toString('base64')
+  if (mData.albumCover != GOOGLE_API_LIMIT_EXCEEDED){
+    writer.setFrame('APIC', mData.albumCover)
+    albumCover = mData.albumCover.toString('base64')
   } else {
-    thumbnail = GOOGLE_API_LIMIT_EXCEEDED
+    albumCover = GOOGLE_API_LIMIT_EXCEEDED
   }
 
   writer.addTag();
@@ -288,7 +288,7 @@ function writeTag (mData) {
     year: mData.firstRealseDate.substring(0, 4),
     duration: mData.duration,
     musicGenreList: mData.musicGenreList,
-    thumbnail:thumbnail }
+    albumCover:albumCover }
 }
 
 function songGetAndUpdateData (file) {
@@ -319,11 +319,11 @@ function songGetAndUpdateData (file) {
             }
         
             Promise.all([ getMoreDetails(metadata),
-              getThumbnail(metadata.title,
+              getAlbumCover(metadata.title,
                             metadata.artists) ])
 
               .then(values => {
-                values[0].thumbnail = values[1]
+                values[0].albumCover = values[1]
                 var result = writeTag(values[0])
 
                 var pos = docsSongs.findIndex(x => x._id == result._id)
@@ -351,7 +351,7 @@ function songGetAndUpdateData (file) {
 function updateSongCover (fileData){
   return new Promise((resolve, reject) => {
 
-    getThumbnail(fileData.track_name, fileData.artists)
+    getAlbumCover(fileData.track_name, fileData.artists)
       .then(values => {
         console.log(values);
         if (values == GOOGLE_API_LIMIT_EXCEEDED){

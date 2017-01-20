@@ -46,7 +46,7 @@ export default class Player {
         this.player.mute()
         break
       default:
-        this.player.volume = 0
+        this.player.muted = true
     }
   }
 
@@ -56,10 +56,18 @@ export default class Player {
         this.player.unMute()
         break
       default:
-        this.player.volume = 1
+        this.player.muted = false
     }
   }
 
+  isMuted = () => {
+    switch (this.type) {
+      case YOUTUBE_CONSTS.YOUTUBE:
+        return this.player.isMuted()
+      default:
+        return this.player.muted
+    }
+  }
   removeEventListener = (event, method) => {
     this.player.removeEventListener(event, method)
   }
@@ -89,8 +97,7 @@ export default class Player {
   setCurrentTime = (currentTime) => {
     switch (this.type) {
       case YOUTUBE_CONSTS.YOUTUBE:
-        //this.player.seekTo(currentTime, true)
-        console.log(currentTime)
+        // this.player.seekTo(currentTime, true)
         this.player.seekTo(currentTime, true)
         break
       default:

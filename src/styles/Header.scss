@@ -35,10 +35,50 @@ nav .brand-logo:before {
    content: "Music Libary";
 }
 
-#search-btn:before {
-    content: "search";
+
+#search-form .material-icons {
+&.search-btn {
+
     color: $wild-sand; 
+    vertical-align: 50%;
+    
+    &.hidden {
+        display: none;
+    }
+    &.close {
+        color: $black-pearl;
+
+        -webkit-transition: color 400ms ease-out;
+        -moz-transition: color  400ms ease-out;
+        -ms-transition: color 400ms ease-out;
+        transition: color 400ms ease-out;
+    }
+} 
+    &.close-btn {
+        color: $black-pearl;
+        vertical-align: 50%;
+          &.hidden {
+        display: none;
+    }
+    }
 }
+
+
+/*
+.search-btn {
+
+    color: $wild-sand; 
+    vertical-align: 50%;
+ 
+    &.close {
+        color: $black-pearl;
+
+        -webkit-transition: color 800ms linear !important;
+        -moz-transition: color  800ms linear !important;
+        -ms-transition: color 800ms linear !important;
+        transition: color 800ms linear !important;
+    }
+} */
 
 nav #search {
     background-color: inherit;
@@ -53,26 +93,26 @@ nav #search-form{
     &.full-width {
         width: 100%;
         background-color: $wild-sand;
-        -webkit-transition: background-color 400ms linear;
-        -moz-transition: background-color  400ms linear;
-        -ms-transition: background-color 400ms linear;
-        transition: background-color 400ms linear;
+        -webkit-transition: background-color 400ms ease-in;
+        -moz-transition: background-color  400ms ease-in;
+        -ms-transition: background-color 400ms ease-in;
+        transition: background-color 400ms ease-in;
     }
 }
-
+/*
 #search:focus + #search-btn:before {
     content: "close";
     vertical-align: 50%;
     color: $black-pearl;
-} 
-
+} */
+/*
 #search-form > #search:focus {
   //& {
     width: 100% !important;
     left: 0;
     //background-color: black;
     //}
-}
+}*/
 /*
 #search:focus {
   #search-form & {

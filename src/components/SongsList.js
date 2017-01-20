@@ -1,9 +1,6 @@
 import '../styles/SongList.scss'
 import React, { Component, PropTypes } from 'react'
 import SongItem from '../containers/SongItemContainer'
-import { Card } from 'material-ui/Card'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow } from 'material-ui/Table'
 import { TABLE_HEADER_FONT_COLOR, BASE_COLOR3 } from '../constants'
 
 class SongsList extends Component {
@@ -16,7 +13,7 @@ class SongsList extends Component {
   }
 
   tableHeaderStyle = {
-    'color' : TABLE_HEADER_FONT_COLOR,
+    'color' : 'black', // TABLE_HEADER_FONT_COLOR,
     'fontSize' : '18px'
   }
 
@@ -32,35 +29,24 @@ class SongsList extends Component {
     const { songs } = this.props
     return (
       <div className='container'>
-        <MuiThemeProvider>
-          <Card style={this.cardStyle}>
+        <div className='card' style={this.cardStyle}>
 
-            <Table style={{ 'backgroundColor' : BASE_COLOR3 }}>
-
-              <TableHeader className='hidden-xs-down'
-                displaySelectAll={false}
-                adjustForCheckbox={false}>
-
-                <TableRow>
-                  <TableHeaderColumn style={this.tableHeaderStyle} >Name</TableHeaderColumn>
-                  <TableHeaderColumn style={this.tableHeaderStyle}>Artist</TableHeaderColumn>
-                  <TableHeaderColumn style={this.tableHeaderStyle}>
-                    <i className='material-icons'>access_time</i>
-                  </TableHeaderColumn>
-                </TableRow>
-
-              </TableHeader>
-
-              <TableBody displayRowCheckbox='false'>
-                {this.renderSongs(songs)}
-              </TableBody>
-
-            </Table>
-
-          </Card>
-
-        </MuiThemeProvider>
-
+          <table className='highlight'
+            style={{ 'margin' : '5px' }}>
+            <thead className='hidden-xs-down'>
+              <tr>
+                <th data-field='id'>Name</th>
+                <th data-field='name'>Artists</th>
+                <th data-field='time'>
+                  <i className='material-icons'>access_time</i>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.renderSongs(songs)}
+            </tbody>
+          </table>
+        </div>
       </div>
     )
   }

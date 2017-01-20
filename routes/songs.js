@@ -56,7 +56,7 @@ router.get('/autocomplete', function (req, res) {
   var url = 'http://suggestqueries.google.com/complete/search?q=' +
   req.query.q +
   '&client=firefox'
-  request(url, function (error, response, body) {
+  request(encodeURI(url), function (error, response, body) {
     if (!error && response.statusCode === 200) {
       var mBody = JSON.parse(body)
       console.log(mBody[1])
@@ -66,6 +66,8 @@ router.get('/autocomplete', function (req, res) {
 })
 
 router.get('/search', function (req, res) {
+
+  console.log('req.query.q', req.query.q)
   let youtubeResults = []
   let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=` +
   req.query.q +
@@ -73,7 +75,8 @@ router.get('/search', function (req, res) {
 
   let videoIds = ''
 
-  request(url, function (error, response, body) {
+  request(encodeURI(url), function (error, response, body) {
+
     if (!error && response.statusCode === 200) {
       var mBody = JSON.parse(body)
       let video
@@ -84,7 +87,7 @@ router.get('/search', function (req, res) {
         youtubeResults.push({ 'id' : video.id.videoId,
           'artists' : ['Youtube'],
           'title' : video.snippet.title,
-          'thumbnail' : video.snippet.thumbnails.medium.url })
+          'albumCover' : video.snippet.thumbnails.medium.url })
 
         videoIds = videoIds + ',' + video.id.videoId
       }
@@ -119,6 +122,44 @@ router.get('/search', function (req, res) {
      // res.json({'youtubeResults' : youtubeResults })
     }
   })
+})
+router.get('/download', function (req, res) {
+  var http = require('http')
+  var fs = require('fs')
+  var path = require('path')
+
+  console.log('download')
+  let url = 'http://www.youtubeinmp3.com/fetch/?format=JSON&video=https://www.youtube.com/watch?v=hn3wJ1_1Zsg'
+
+  request(url, function (error, response, body) {
+    if (!error && response.statusCode === 200) {
+      let mBody = JSON.parse(body)
+      let dest = path.join(global.music_files, 'song.mp3')
+      let file = fs.createWriteStream(dest, { autoClose: true })
+      console.log(mBody.link)
+
+      //var file = fs.createWriteStream(dest);
+      var r = request(mBody.link).pipe(file);
+      r.on('error', function(err) { console.log(err); });
+      //r.on('finish', function() { file.close(cb) });
+     
+       /*
+      var request = http.get(mBody.link, function (response) {
+        console.log(response)
+        response.pipe(file)
+        console.log('hey')
+      }).on('error', function (err) { // Handle errors
+        console.log('err')
+        fs.unlink(dest) // Delete the file async. (But we don't check the result)
+  })*/
+    };
+  })
+/*
+  var file = fs.createWriteStream("file.jpg");
+  var request = http.get("http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg", function(response) {
+    response.pipe(file);
+  });
+*/
 })
 
 module.exports = router

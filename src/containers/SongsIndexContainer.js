@@ -14,8 +14,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetchSongs: () => {
       dispatch(fetchSongs()).then((response) => {
-        dispatch(fetchSongsSuccess(response.payload))
         dispatch(setActiveSong(response.payload.data[0]))
+        dispatch(fetchSongsSuccess(response.payload))
       })
     }
   }

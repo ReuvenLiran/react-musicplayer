@@ -8,7 +8,7 @@ import { FETCH_SONGS, FETCH_SONGS_SUCCESS,
 
 const INITIAL_STATE =
   { songsList: { songs: [], error:null, loading: true },
-    activeSong:{ song:null, error:null, loading: false },
+    activeSong: {} /*{ song:null, error:null, loading: false } */,
     autocompleteList:[],
     searchList: { results:[], error: null, loading: true }
   }
@@ -35,14 +35,14 @@ export default function (state = INITIAL_STATE, action) {
       return { ...state, autocompleteList: action.payload.data }
 
     case FETCH_SEARCH_RESULTS: // start fetching search results and set loading = true
-      //return { ...state, searchList: { results:[], error: null, loading: true } }
+      // return { ...state, searchList: { results:[], error: null, loading: true } }
       return { ...state, songsList: { songs:[], error: null, loading: true } }
     case FETCH_SEARCH_RESULTS_SUCCESS: // return list of songs and make loading = false
-      //return { ...state, searchList: { results: action.payload.data, error:null, loading: false } }
+      // return { ...state, searchList: { results: action.payload.data, error:null, loading: false } }
       return { ...state, songsList: { songs: action.payload.data.youtubeResults, error:null, loading: false } }
     case FETCH_SEARCH_RESULTS_FAILURE:// return error and make loading = false
       /* error = action.payload.data || { message: action.payload.message }// 2nd one is network or server down errors
-      return { ...state, searchList: { results: [], error: error, loading: false } } */  
+      return { ...state, searchList: { results: [], error: error, loading: false } } */
       error = action.payload.data || { message: action.payload.message }// 2nd one is network or server down errors
       return { ...state, songsList: { songs: [], error: error, loading: false } }
 

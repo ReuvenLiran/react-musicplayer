@@ -1,14 +1,12 @@
 import '../styles/SongsIndex.scss'
 import React, { Component, PropTypes } from 'react'
 import SongsList from '../containers/SongsListContainer'
-import ReactMusicPlayerFloat from '../containers/ReactMusicPlayerFloatContainer'
-import CircularProgress from 'material-ui/CircularProgress'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+// import ReactMusicPlayerFloat from '../containers/ReactMusicPlayerFloatContainer'
+import MusicPlayer from '../containers/MusicPlayer'
+import CircularProgress from './CircularProgress'
 import Header from '../containers/Header'
-import { Tabs, Tab } from 'material-ui/Tabs'
-import Paper from 'material-ui/Paper'
 import SwipeableViews from 'react-swipeable-views'
-import { HEADER_FONT_COLOR, BASE_COLOR2, BASE_COLOR1 } from '../constants'
+import { BASE_COLOR2 } from '../constants'
 
 class SongsIndex extends Component {
 
@@ -20,7 +18,7 @@ class SongsIndex extends Component {
   }
 
   onSearch = (e) => {
-    console.log('onSearch',this.props)
+    console.log('onSearch', this.props)
   }
 
   handleChangeTab = (e) => {
@@ -41,11 +39,7 @@ class SongsIndex extends Component {
     if (loading) {
       return (
         <div className='container'>
-          <div id='CircularProgress'>
-            <MuiThemeProvider>
-              <CircularProgress size={52} />
-            </MuiThemeProvider>
-          </div>
+          <CircularProgress />
         </div>
       )
     } else if (error) {
@@ -85,17 +79,9 @@ class SongsIndex extends Component {
              </div>
 
           </SwipeableViews>
-          <ReactMusicPlayerFloat height='20%' songs={songs} song={songs[0]} />
+          <MusicPlayer songs={songs} />
         </div>
       )
-/*
-      return (
-
-        <div style={{ 'margin' : '0', 'width' : 'inherit' }} >
-          <Header />
-        </div>
-
-      ) */
     }
   }
 }

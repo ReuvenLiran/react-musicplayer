@@ -43,6 +43,7 @@ export function fetchSongsFailure (error) {
 }
 
 export function setActiveSong (activeSong) {
+  console.log('setActiveSong', activeSong)
   return {
     type: ACTIVE_SONG,
     payload: activeSong
