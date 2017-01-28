@@ -1,20 +1,18 @@
 import { connect } from 'react-redux'
 import { setActiveSong } from '../actions/songs'
 import React, { Component, PropTypes } from 'react'
-import ReactMusicPlayerFloat from '../components/MusicPlayer'
-import Player from '../Player'
+import MusicPlayer from '../components/MusicPlayer'
+import Player from '../utils/Player'
 import shuffle from 'shuffle-array'
-import { BASE_COLOR1, YOUTUBE_CONSTS } from '../constants'
-import LinearProgress from 'material-ui/LinearProgress'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import '../styles/ReactMusicPlayerFloat.scss'
-
+import { YOUTUBE_CONSTS } from '../utils/constants'
+import LinearProgress from '../components/LinearProgress'
+import Utils from '../utils/utils'
 var youtubePlayer
 var player
-var loadYT1
 
 const mapStateToProps = (state) => {
   return {
+    loadYT: state.songs.loadYT,
     activeSong: state.songs.activeSong
   }
 }
@@ -32,36 +30,29 @@ class MusicPlayerContainer extends Component {
   constructor (props) {
     super(props)
     this.songs = this.props.songs
-    // this.props.setActiveSong(this.props.songs[0])
     this.repeat = false
     this.progress = 0
     this.current = 0
     this.random = false
     this.type = 'LOCAL'
     this.song = this.props.activeSong
-    this.song.artists = this.alignArtists(this.song.artists)
+    this.song.artists = Utils.alignArtists(this.song.artists)
+    this.isPlay = false
 
     this.state = {
       type: null,
-      current: 0,
-      progress: 0
+      progress: 0,
+      isPlay: false
     }
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('componentWillReceiveProps', this.song)
-    console.log('componentWillReceiveProps', this.song.artists.constructor == Array)
     this.song = nextProps.activeSong
-
-    this.song.artists = this.alignArtists(this.song.artists)
-
+    this.song.artists = Utils.alignArtists(this.song.artists)
     if (this.song !== undefined) {
-
       if (this.song.artists === 'Youtube') {
         player.setSrc(this.song.id)
-        player.play()
       } else {
-      
         player = new Player(this.refs.child.refs.player, 'LOCAL', this.song.file)
 
         player.addEventListener('timeupdate', this.updateProgress)
@@ -69,19 +60,14 @@ class MusicPlayerContainer extends Component {
         player.addEventListener('error', this.next)
 
         this.type = 'LOCAL'
-
         player.setSrc(this.song.file)
       }
+      this.setState({ progress : 0 })
     }
   }
 
   componentDidMount = () => {
-    console.log('componentDidMount', this.props.activeSong)
-
     this.song = this.props.activeSong
-    if (!loadYT1) {
-      this.loadYoutubeAPI()
-    }
 
     if (this.song !== null) {
       if (this.song.artists !== YOUTUBE_CONSTS.YOUTUBE) {
@@ -92,69 +78,45 @@ class MusicPlayerContainer extends Component {
         player.addEventListener('error', this.next)
         this.type = 'LOCAL'
       } else if (this.song.artists === YOUTUBE_CONSTS.YOUTUBE) {
-        loadYT1.then((YT) => {
-          youtubePlayer = new YT.Player(this.refs.child.youtubePlayerAnchor, {
-            height: 0,
-            width: 0,
-            videoId: this.song.id,
-            playerVars: {
-              controls: 0,
-              disablekb: 1,
-              modestbranding: 1,
-              rel: 0,
-              fs: 0,
-              showinfo: 0
-            },
-            events: {
-              onReady: this.onReady,
-              onStateChange: this.onPlayerStateChange
-            }
-          })
-          this.type = YOUTUBE_CONSTS.YOUTUBE
-          player = new Player(youtubePlayer, YOUTUBE_CONSTS.YOUTUBE, this.song.src)
+        youtubePlayer = new this.props.loadYT.Player(this.refs.child.youtubePlayerAnchor, {
+          height: 0,
+          width: 0,
+          videoId: this.song.id,
+          playerVars: {     // Clean up youtube iframe for better performance
+            controls: 0,
+            disablekb: 1,
+            modestbranding: 1,
+            rel: 0,
+            fs: 0,
+            showinfo: 0
+          },
+          events: {
+            onReady: this.onReady,
+            onStateChange: this.onPlayerStateChange
+          }
         })
+        this.type = YOUTUBE_CONSTS.YOUTUBE
+        player = new Player(youtubePlayer, YOUTUBE_CONSTS.YOUTUBE, this.song.src)
       }
     }
   }
-  loadYoutubeAPI = () => {
-    loadYT1 = new Promise((resolve) => {
-      console.log('loadYT Loading...')
-      const tag = document.createElement('script')
-      tag.src = YOUTUBE_CONSTS.API_URL
-      const firstScriptTag = document.getElementsByTagName('script')[0]
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
-      window.onYouTubeIframeAPIReady = () => { resolve(window.YT); console.log('YT') }
-    })
-  }
 
   onReady = (e) => {
-    console.log('onReady')
-    player.pause()
+    console.log('ready')
   }
   onPlayerStateChange = (e) => {
+    this.state.isPlay ? player.play() : player.pause()
+
     if (e.data === 0) {
       this.end()
     }
 
-    if (e.data !== 1 && this.interval) {
+    if (e.data !== 1 && !this.state.isPlay && this.interval) {
       clearInterval(this.interval)
       delete this.interval
-    } else {
+    } else if (e.data === 1 & this.state.isPlay && !this.interval) {
       this.interval = setInterval(this.updateProgress, 1000)
     }
-  }
-
-  alignArtists = (artists) => {
-    if (artists.constructor !== Array) {
-      return artists
-    }
-    var strArtists = ''
-    if (artists !== undefined) {
-      artists.map((artist) => {
-        strArtists = strArtists.concat(artist).concat(', ')
-      })
-    }
-    return strArtists.slice(0, strArtists.length - 2)
   }
 
   updateProgress = () => {
@@ -162,14 +124,17 @@ class MusicPlayerContainer extends Component {
     let currentTime = player.getCurrentTime()
     this.progress = (currentTime * 100) / duration
     this.setState({ progress: this.progress })
+    console.log('updateProgress')
   }
 
   play = () => {
     player.play()
+    this.setState({ isPlay: true })
   }
 
   pause = () => {
     player.pause()
+    this.setState({ isPlay: false })
   }
 
   next = () => {
@@ -233,18 +198,24 @@ class MusicPlayerContainer extends Component {
     return (
 
       <footer className='player-container' style={{ 'height' : '90px !important', 'width': '100%' }}>
-        <MuiThemeProvider>
-          <div className='progress-bar' onClick={this.setProgress}>
-            <LinearProgress color={BASE_COLOR1} mode='determinate' value={this.state.progress} />
-          </div>
-        </MuiThemeProvider>
+        <div className='progress-bar' onClick={this.setProgress}>
+          <LinearProgress progress={this.state.progress} />
+        </div>
 
-        <ReactMusicPlayerFloat ref='child' play={this.play} pause={this.pause}
+        <MusicPlayer ref='child' play={this.play} pause={this.pause}
           next={this.next} previous={this.previous} mute={this.mute} repeat={this.toggleRepeat}
-          random={this.randomize} song={this.song} />
+          random={this.randomize} song={this.song} isPlay={this.state.isPlay} />
       </footer>
     )
   }
+}
+
+MusicPlayerContainer.propTypes = {
+  song: PropTypes.object.isRequired,
+  songs: PropTypes.array.isRequired,
+  activeSong: PropTypes.object.isRequired,
+  loadYT: PropTypes.object.isRequired,
+  setActiveSong: PropTypes.func.isRequired
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MusicPlayerContainer)

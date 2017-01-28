@@ -1,5 +1,5 @@
 var fs = require('fs'); 
-var id3 = require('id3js');
+//var id3 = require('id3js');
 var mime = require('mime-types');
 var exec  = require('child_process').execFile;
 var ID3Writer = require('browser-id3-writer');

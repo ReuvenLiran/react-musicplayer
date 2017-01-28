@@ -1,4 +1,6 @@
 import React, { Component, PropTypes } from 'react'
+import SongsIndexContainer from '../containers/SongsIndexContainer'
+import Header from '../containers/Header'
 
 export default class App extends Component {
   componentWillMount () {
@@ -8,7 +10,8 @@ export default class App extends Component {
   render () {
     return (
       <div>
-        {this.props.children}
+        <Header />
+        <SongsIndexContainer />
       </div>
     )
   }

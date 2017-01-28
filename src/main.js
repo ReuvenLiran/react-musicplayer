@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { Router } from 'react-router'
-import routes from './routes'
+// import { Router } from 'react-router'
+// import routes from './routes'
 import configureStore from './store/configureStore.js'
-
+import App from './components/App'
 // ========================================================
 // Store Instantiation
 // ========================================================
@@ -21,7 +21,7 @@ let render = () => {
 
   ReactDOM.render(
     <Provider store={store}>
-      <Router routes={routes} />
+      <App />
     </Provider>,
     MOUNT_NODE
   )
@@ -57,7 +57,7 @@ if (__DEV__) {
     }
 
     // Setup hot module replacement
-    module.hot.accept('./routes', () =>
+    module.hot.accept('./components/App', () =>
       setImmediate(() => {
         ReactDOM.unmountComponentAtNode(MOUNT_NODE)
         render()

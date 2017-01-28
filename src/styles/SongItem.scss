@@ -1,65 +1,49 @@
- .song-item {
-    width: 100%;
-    list-style-type:none;
-    background-color: #F1F1F2;
-    color: #1995AD;
-    display: inline-block;
-    
-    &.active-song { background-color: #e4e4e6 ; }   
-    &:hover { background-color: #d7d7d9 ; } 
-     
-}
-
-.artists,
-.song-name,
-.duration {
-    font-family: 'Oswald', sans-serif;  
-}
-
-.duration {
-    margin-left: 2%;
-    margin-right: 2%; 
-}
-
-.artists,
-.song-name  {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    text-align: left;
-} 
- 
-.player-cover1 {
-    float : left;
-    position: relative;
-    height: 100%;
-    width: 10vw;
-    margin-right: 2vw; 
-    background-position: top center;
-    background-size: cover;
-    transition: height .4s;
-}
+@import 'base';
+@import '~normalize.css/normalize';
   
-@media screen and (orientation: landscape) {
-  .song-item {
-     height : 5vw;
-   } 
-  .artists,
-  .song-name,
-  .duration {  
-     font-size : 1.4vw;
- } 
+.song-item {
+    font-size: 14px;
+    color: $black-pearl;
 }
 
-@media screen and (orientation: portrait) {
-  .song-item {
-     height : 6vh;
-  } 
- .artists,
- .song-name, 
- .duration { 
-    font-size : 1.5vmin;
- }  
+.album-cover-container {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.album-cover {
+    height: 40px;
+    width: 40px;
+    margin-right: 2vh;
+}
+
+.song-metadata-mobile {
+//    max-width: 75%;
+    display: inline-block;
+    vertical-align: middle;
+    max-width: calc(100% - 70px); //new
+
+    .song-title {
+        display : inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width : calc(100vw - 90px);
+    }
+
+    .artists-duration {
+        font-size: 10px;
+
+        .song-artist {
+        float: left;
+        max-width: calc(100% - 35px);
+        display: inline-block;
+        }
+
+        .song-time {
+        float: left;
+        }
+    }
 }
 
 @media screen and (max-width: 544px) {
@@ -75,10 +59,13 @@
     display: none;
 }
 .over-flow{
-  float: left;
-  width: inherit; 
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis; 
-  display: inline-block;
 }
+
+
+td {
+  max-width: 100vw; //new
+}
+

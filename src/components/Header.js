@@ -1,56 +1,76 @@
-import React, { Component } from 'react'
+import React, { PropTypes } from 'react'
 import '../styles/Header.scss'
 import classnames from 'classnames'
+import AutoComplete from './AutoComplete'
+import Search from './Search'
 
-class Header extends Component {
+const Header = ({ autocompleteList, onFocus, onBlur, searchState,
+                  searchQuery, onClickSearch, onChange, onSelect, onClose }) => {
+  let autoCompleteState
 
-  renderDataList (autocompleteList) {
-    if (autocompleteList === undefined) {
-      return
-    }
-    return autocompleteList.map((q, index) => {
-      let opt = 'opt' + index
-      return (
-        <option id={opt} value={q} />
-      )
-    })
+  if (searchState === 'open' && searchQuery !== '') {
+    autoCompleteState = 'show'
+  } else if (searchState === 'open' && searchQuery === '') {
+    autoCompleteState = 'close-solo'
+  } else {
+    autoCompleteState = 'close'
   }
 
-  render () {
-    let brandLogoClass = classnames('brand-logo', { 'hidden': this.props.inputFocus })
-    let inputSearchClass = classnames({ 'full-width': this.props.inputFocus })
-    let searchButtonClass = classnames('material-icons search-btn', { 'hidden': this.props.inputFocus })
-    let closeButtonClass = classnames('material-icons close-btn', { 'hidden': !this.props.inputFocus })
+  let brandLogoClass = classnames('brand-logo',
+    { 'hidden': searchState === 'open',
+      'display': searchState === 'close' && searchQuery !== '',
+      'quick-display' : searchState === 'close' && searchQuery === ''
+    })
+  let searchButtonClass = classnames('material-icons right search-btn',
+    { 'hidden': searchState === 'open',
+      'display': searchState === 'close' && searchQuery !== '',
+      'quick-display' : searchState === 'close' && searchQuery === ''
+    })
 
+  const renderAutoComplete = () => {
     return (
-      <div>
-        <nav className='app-header'>
-          <div className='nav-wrapper'>
-            <a href='#!' className={brandLogoClass}>
-              <i className='material-icons'>library_music</i></a>
-
-            <form id='search-form' className={inputSearchClass}>
-              <div className='input-field'>
-                <input list='songs' id='search' type='search' placeholder='search'
-                  autoComplete='off' onChange={this.props.onChange} onFocus={this.props.onFocus}
-                  onBlur={this.props.onBlur} value={this.props.searchQuery}
-                  ref='inputSearch' required />
-                <i id='search-btn' onClick={this.props.onSearch} className={searchButtonClass}>
-                  search
-                </i>
-                <i id='close-btn' className={closeButtonClass}>
-                 close
-                </i>
-                <datalist id='songs'>
-                  { this.renderDataList(this.props.autocompleteList) }
-                </datalist>
-              </div>
-            </form>
-          </div>
-        </nav>
-      </div>
+      <AutoComplete onSelect={onSelect}
+        autocompleteList={autocompleteList}
+        autoCompleteState={autoCompleteState} />
     )
   }
+
+  return (
+    <div>
+      <nav className='app-header'>
+        <div className='nav-wrapper'>
+          <a href='#!' className={brandLogoClass} style={{ 'marginLeft' : '30px' }}>
+            <i className='material-icons'>library_music</i></a>
+
+          <i style={{ 'color' : 'white', 'marginRight' : '30px' }}
+            onClick={onClickSearch} className={searchButtonClass}>
+                  search
+          </i>
+          <Search onFocus={onFocus}
+            onBlur={onBlur}
+            searchQuery={searchQuery}
+            searchState={searchState}
+            onChange={onChange}
+            onSelect={onSelect}
+            onClose={onClose}
+            autoComplete={renderAutoComplete} />
+        </div>
+      </nav>
+    </div>
+  )
+}
+
+Header.propTypes = {
+  autocompleteList: PropTypes.array.isRequired,
+  onFocus: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onClickSearch: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  inputFocus: PropTypes.bool.isRequired,
+  searchQuery: PropTypes.string.isRequired,
+  searchState: PropTypes.string.isRequired
 }
 
 export default Header

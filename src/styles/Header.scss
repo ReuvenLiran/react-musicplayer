@@ -4,23 +4,12 @@
 input::-webkit-calendar-picker-indicator {
   display: none;
 }
-.autocomplete-content {
-     position: absolute;
-     z-index: 2 !important;
-     background-color: green;
-     width: 100%;
-     color: $black-pearl;
-     margin-top: -20px;
-     
-     //background-color: black;
-} 
- 
+
 .app-header {
     background-color: $nile-blue;
     z-index: 10;
 }
  
-
 nav .brand-logo {
    position: relative;
    width: 25%;
@@ -28,100 +17,33 @@ nav .brand-logo {
    color: $wild-sand;
 
    &.hidden {
-       display: none !important;
+      opacity: 0;
+      top: 64px;
+      transition: opacity 300ms, top 300ms ease-in;
+      -webkit-transition: opacity 300ms, top 300ms ease-in; 
+      -moz-transition: opacity 300ms, top 300ms ease-in;
+      -ms-transition: opacity 300ms, top 300ms ease-in;  
+    }
+    &.display {
+      top: 0;
+      opacity: 1;
+      transition: opacity 300ms 1.2s, top 300ms 1.2s ease-in;
+      -webkit-transition: opacity 300ms 1.2s, top 300ms 1.2s ease-in;
+      -moz-transition: opacity 300ms 1.2s, top 300ms 1.2s ease-in;
+      -ms-transition: opacity 300ms 1.2s, top 300ms 1.2s ease-in; 
+    }
+    &.quick-display {
+      top: 0;
+      opacity: 1;
+      transition: opacity 300ms, top 300ms ease-in;
+      -webkit-transition: opacity 300ms, top 300ms ease-in;
+      -moz-transition: opacity 300ms, top 300ms ease-in;
+      -ms-transition: opacity 300ms, top 300ms ease-in;
     }
 }
 nav .brand-logo:before {
-   content: "Music Libary";
+   content: "MusicOn";
 }
-
-
-#search-form .material-icons {
-&.search-btn {
-
-    color: $wild-sand; 
-    vertical-align: 50%;
-    
-    &.hidden {
-        display: none;
-    }
-    &.close {
-        color: $black-pearl;
-
-        -webkit-transition: color 400ms ease-out;
-        -moz-transition: color  400ms ease-out;
-        -ms-transition: color 400ms ease-out;
-        transition: color 400ms ease-out;
-    }
-} 
-    &.close-btn {
-        color: $black-pearl;
-        vertical-align: 50%;
-          &.hidden {
-        display: none;
-    }
-    }
-}
-
-
-/*
-.search-btn {
-
-    color: $wild-sand; 
-    vertical-align: 50%;
- 
-    &.close {
-        color: $black-pearl;
-
-        -webkit-transition: color 800ms linear !important;
-        -moz-transition: color  800ms linear !important;
-        -ms-transition: color 800ms linear !important;
-        transition: color 800ms linear !important;
-    }
-} */
-
-nav #search {
-    background-color: inherit;
-}
-nav #search-form{ 
-    width: 75%;
-    vertical-align: 50%;
-    position: relative;
-    display: inline-block;
-    background-color: lighten($nile-blue, 6%);
-   
-    &.full-width {
-        width: 100%;
-        background-color: $wild-sand;
-        -webkit-transition: background-color 400ms ease-in;
-        -moz-transition: background-color  400ms ease-in;
-        -ms-transition: background-color 400ms ease-in;
-        transition: background-color 400ms ease-in;
-    }
-}
-/*
-#search:focus + #search-btn:before {
-    content: "close";
-    vertical-align: 50%;
-    color: $black-pearl;
-} */
-/*
-#search-form > #search:focus {
-  //& {
-    width: 100% !important;
-    left: 0;
-    //background-color: black;
-    //}
-}*/
-/*
-#search:focus {
-  #search-form & {
-    width: 100% !important;
-    left: 0;
-    //background-color: black;
-
-  ///background-color: lighten($nile-blue, 60%);
-}*/
 
 @media only screen and (max-width: 992px)
 {   
@@ -134,17 +56,39 @@ nav #search-form{
     nav .brand-logo:before {
         content: "" !important;
     }   
-
-    nav #search-form {
-        vertical-align: top;
-        display: inline-block;
-    }
 }
 
-@keyframes example {
-    0%   {display: none}
-    25%  {display: inline-block}
-    50%  {background-color:blue; left:200px; top:200px;}
-    75%  {background-color:green; left:0px; top:200px;}
-    100% {background-color: $wild-sand;}
+.material-icons {
+    &.search-btn {
+        cursor: pointer;
+        position: relative;
+        color: $wild-sand; 
+        vertical-align: 50%;
+      
+        &.hidden {
+            opacity: 0;
+            top: 64px;
+            transition:opacity 300ms, top 300ms ease-in;
+            -webkit-transition: opacity 300ms, top 300ms ease-in;
+            -moz-transition: opacity 300ms, top 300ms ease-in;
+            -ms-transition: opacity 300ms, top 300ms ease-in;
+         }
+
+         &.quick-display {
+            top: 0;
+            opacity: 1;
+            transition: opacity 300ms, top 300ms ease-in;
+            -webkit-transition: opacity 300ms, top 300ms ease-in;
+            -moz-transition: opacity 300ms, top 300ms ease-in;
+            -ms-transition: opacity 300ms, top 300ms ease-in;
+         }
+         &.display {
+            top: 0;
+            opacity: 1;
+            transition: opacity 300ms 1.2s, top 300ms 1.2s ease-in;
+            -webkit-transition: opacity 300ms 1.2s, top 300ms 1.2s ease-in;
+            -moz-transition: opacity 300ms 1.2s, top 300ms 1.2s ease-in;
+            -ms-transition: opacity 300ms 1.2s, top 300ms 1.2s ease-in;
+         }
+    }
 }

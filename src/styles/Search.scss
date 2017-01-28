@@ -1,0 +1,84 @@
+@import 'base';
+@import '~normalize.css/normalize';
+ 
+#search-form .material-icons {
+    &.close-btn {
+        color: $black-pearl;
+        vertical-align: 50%;
+    }
+}
+   
+nav #search-form{ 
+   display: inline-block;
+   vertical-align: top;
+   position: absolute;
+  
+   height: inherit;
+   left: 0;
+   width: 100%;
+   top: -64px;
+
+   & > .input-field{
+    background-color: $wild-sand;
+    color: $black-pearl;
+   }
+    &.show {
+        z-index: 66666;
+        top: 0;
+        -webkit-transition: top 400ms ease-in 0.2s;
+        -moz-transition: top 400ms ease-in  0.2s;
+        -ms-transition: top 400ms ease-in 0.2s;
+        transition: top 400ms ease-in 0.2s;
+    }
+    
+    &.disappear-solo {
+        top: -64px;
+        transition:  top 0.4s linear;   
+        -webkit-transition:  top 0.4s linear; 
+        -moz-transition: top 0.4s linear; 
+        -ms-transition: top 0.4s linear; 
+        
+        & > .input-field {
+            opacity: 0;
+            transition:  opacity 0.4s linear;   
+            -webkit-transition:  opacity 0.4s linear; 
+            -moz-transition: opacity 0.4s linear; 
+            -ms-transition: opacity 0.4s linear; 
+         }
+    }
+
+    &.disappear {
+        top: -64px;
+        transition:  top 0.4s linear 0.8s;   
+        -webkit-transition:  top 0.4s linear 0.8s; 
+        -moz-transition: top 0.4s linear 0.8s; 
+        -ms-transition: top 0.4s linear 0.8s; 
+        
+        & > .input-field {
+          animation: myOpacity 1.2s;
+        }
+    }
+}
+
+@keyframes myOpacity {
+    0%   {opacity: 1;}
+    92%  {opacity: 0.8;}
+    100% {opacity: 0;}
+}
+
+input[type=search] {
+    margin-bottom: 0px;
+}
+
+.div-hide {
+   display: inline-block;
+   vertical-align: top;
+   position: absolute; 
+   height: inherit;
+   left: 0;
+   width: 100%;
+
+   &.hidden {
+       display: none;
+   }
+}

@@ -7,28 +7,34 @@
     margin: 0;
 }
 
-.tabs .tab {
-    
-   cursor: pointer;
-   color: $wild-sand !important;
-  
-   &.active {
-    background-color: lighten($nile-blue, 6%) !important;
-   }
-
-   &:hover {
-     background-color: lighten($nile-blue, 15%) !important;
-   }
-}
-
-.row {
-   background-color: $nile-blue;
-}
-
-.tabs { 
-   background-color: $nile-blue;
-} 
-
 .swipableviews {
    background-color: $bone; 
+}
+
+.btn-download {
+    position : fixed;
+    float : right;
+    right : 30px;
+    bottom : 120px;
+    background-color: $nile-blue !important;
+    /*
+    &:active {
+        background-color: $nile-blue;
+    }
+    &:hover {
+         background-color: lighten($nile-blue, 30);
+         transition: background-color 400ms linear;
+    }*//*
+    &:active {
+        background-color: $nile-blue;
+//        background-color: lighten($nile-blue, 30);
+        transition: background-color 400ms linear;
+    }*/
+}
+
+.btn-floating {
+    background-color: $nile-blue;
+}
+.btn-download i {
+  color: $wild-sand;
 }

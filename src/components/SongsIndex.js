@@ -1,13 +1,12 @@
 import '../styles/SongsIndex.scss'
 import React, { Component, PropTypes } from 'react'
-import SongsList from '../containers/SongsListContainer'
-// import ReactMusicPlayerFloat from '../containers/ReactMusicPlayerFloatContainer'
+import SongsList from './SongsList'
 import MusicPlayer from '../containers/MusicPlayer'
 import CircularProgress from './CircularProgress'
-import Header from '../containers/Header'
 import SwipeableViews from 'react-swipeable-views'
-import { BASE_COLOR2 } from '../constants'
-
+import Tabs from './Tabs'
+import { BASE_COLOR2 } from '../utils/constants'
+import FloatButton from './FloatButton'
 class SongsIndex extends Component {
 
   componentWillMount () {
@@ -47,23 +46,7 @@ class SongsIndex extends Component {
     } else {
       return (
         <div style={{ 'margin' : '0', 'width' : 'inherit' }} >
-          <Header onSearch={this.onSearch} />
-
-          <div className='row' style={{ 'margin' : '0', 'width' : '100%' }} >
-            <div className='col s12'>
-              <ul className='tabs' style={{ 'margin' : '0', 'width' : '100%' }}>
-                <li id={0} className='tab col s6'
-                  onClick={this.handleChangeTab}>
-                    SONGS
-                </li>
-                <li id={1} className='tab col s6'
-                  onClick={this.handleChangeTab}>
-                    ARTISTS
-                </li>
-              </ul>
-            </div>
-          </div>
-
+          <Tabs onClick={this.handleChangeTab} activeTab={this.state.slideIndex} />
           <SwipeableViews
             className='swipableviews'
             index={this.state.slideIndex}
@@ -72,13 +55,13 @@ class SongsIndex extends Component {
             <div>
               <SongsList songs={songs} />
             </div>
-
             <div>
                 Artists
                 Coming soon...
              </div>
-
           </SwipeableViews>
+
+          <FloatButton icon={'file_download'} />
           <MusicPlayer songs={songs} />
         </div>
       )
@@ -87,7 +70,7 @@ class SongsIndex extends Component {
 }
 
 SongsIndex.propTypes = {
-  songsList: PropTypes.array.isRequired,
+  songsList: PropTypes.object.isRequired,
   fetchSongs: PropTypes.func.isRequired
 }
 

@@ -66,17 +66,17 @@ router.get('/autocomplete', function (req, res) {
 })
 
 router.get('/search', function (req, res) {
-
   console.log('req.query.q', req.query.q)
   let youtubeResults = []
   let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=` +
   req.query.q +
+  `&videoCategoryId=10` +
+  `&maxResults=15` +
   `&type=video&key=AIzaSyC_nfVmlTAYzpwxI6ujBRsufBxpT1OMJA0`
 
   let videoIds = ''
 
   request(encodeURI(url), function (error, response, body) {
-
     if (!error && response.statusCode === 200) {
       var mBody = JSON.parse(body)
       let video
@@ -94,8 +94,8 @@ router.get('/search', function (req, res) {
       console.log(videoIds)
       videoIds = videoIds.substring(1, videoIds.length)
 
-      url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&key=AIzaSyC_nfVmlTAYzpwxI6ujBRsufBxpT1OMJA0&id=`
-          + videoIds
+      url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&key=AIzaSyC_nfVmlTAYzpwxI6ujBRsufBxpT1OMJA0&id=` +
+          videoIds
 
       request(url, function (error, response, body) {
         if (!error && response.statusCode === 200) {
@@ -123,6 +123,7 @@ router.get('/search', function (req, res) {
     }
   })
 })
+
 router.get('/download', function (req, res) {
   var http = require('http')
   var fs = require('fs')
@@ -138,11 +139,11 @@ router.get('/download', function (req, res) {
       let file = fs.createWriteStream(dest, { autoClose: true })
       console.log(mBody.link)
 
-      //var file = fs.createWriteStream(dest);
-      var r = request(mBody.link).pipe(file);
-      r.on('error', function(err) { console.log(err); });
-      //r.on('finish', function() { file.close(cb) });
-     
+      // var file = fs.createWriteStream(dest);
+      var r = request(mBody.link).pipe(file)
+      r.on('error', function (err) { console.log(err) })
+      // r.on('finish', function() { file.close(cb) });
+
        /*
       var request = http.get(mBody.link, function (response) {
         console.log(response)
@@ -151,7 +152,7 @@ router.get('/download', function (req, res) {
       }).on('error', function (err) { // Handle errors
         console.log('err')
         fs.unlink(dest) // Delete the file async. (But we don't check the result)
-  })*/
+  }) */
     };
   })
 /*
@@ -160,6 +161,65 @@ router.get('/download', function (req, res) {
     response.pipe(file);
   });
 */
+})
+
+router.get('/getTopPopularSongs', function (req, res) {
+  let youtubeResults = []
+  console.log('url')
+  let url = `https://www.googleapis.com/youtube/v3/playlistItems?` +
+            `part=snippet&maxResults=50&playlistId=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI&` + 
+            `fields=items(snippet(resourceId%2FvideoId%2Cthumbnails%2Ctitle))&key=` +
+            `AIzaSyC_nfVmlTAYzpwxI6ujBRsufBxpT1OMJA0`
+
+  let videoIds = ''
+
+  request(url, function (error, response, body) {
+    console.log(response.statusCode)
+    if (!error && response.statusCode === 200) {
+      var mBody = JSON.parse(body)
+      let video
+
+      for (let videoNum in mBody.items) {
+        video = mBody.items[videoNum]
+        console.log(video)
+        youtubeResults.push({ 'id' : video.snippet.resourceId.videoId,
+          'artists' : ['Youtube'],
+          'title' : video.snippet.title,
+          'albumCover' : video.snippet.thumbnails.medium.url })
+
+        videoIds = videoIds + ',' + video.snippet.resourceId.videoId
+      }
+      console.log(videoIds)
+      videoIds = videoIds.substring(1, videoIds.length)
+
+      url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&key=AIzaSyC_nfVmlTAYzpwxI6ujBRsufBxpT1OMJA0&id=` +
+          videoIds
+
+      request(url, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+          var mBody = JSON.parse(body)
+          let video
+
+          for (let videoNum in mBody.items) {
+            video = mBody.items[videoNum]
+            if (video.id === youtubeResults[videoNum].id) {
+              youtubeResults[videoNum].duration = formatISO8601(video.contentDetails.duration)
+            } else {
+              for (let videoNum1 in youtubeResults) {
+                if (youtubeResults[videoNum1].id === video.id) {
+                  youtubeResults[videoNum1].duration = formatISO8601(video.contentDetails.duration)
+                  break
+                }
+              }
+            }
+          }
+          res.json({ 'youtubeResults' : youtubeResults })
+        }
+      })
+
+     // res.json({'youtubeResults' : youtubeResults })
+    }
+  })
 })
 
 module.exports = router

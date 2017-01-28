@@ -1,0 +1,11 @@
+@import 'base';
+@import '~normalize.css/normalize';
+
+.linear-progress {
+  margin: 0 0 0 0;
+  background-color: lighten($blue-bayoux, 25%);
+ }
+
+.progress .determinate {
+  background-color: $nile-blue;
+}

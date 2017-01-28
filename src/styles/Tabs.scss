@@ -1,0 +1,28 @@
+@import 'base';
+@import '~normalize.css/normalize';
+
+.tabs-no-padding {
+    padding: 0;
+    margin: 0;
+}
+
+.tabs .tab {
+   cursor: pointer;
+   color: $wild-sand !important;
+  
+   &.active {
+    background-color: lighten($nile-blue, 6%) !important;
+   }
+
+   &:hover {
+     background-color: lighten($nile-blue, 15%) !important;
+   }
+}
+
+.tabs {
+   background-color: $nile-blue;
+   margin-bottom: 0px;
+}
+ 
+
+  

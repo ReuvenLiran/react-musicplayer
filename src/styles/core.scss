@@ -1,6 +1,7 @@
 @import 'base';
 @import '~normalize.css/normalize';
 
+/*
 // Some best-practice CSS that's useful for most apps
 // Just remove them if they're not what you want
 html {
@@ -18,4 +19,14 @@ body {
 *:before,
 *:after {
   box-sizing: inherit;
-}
+}*/
+
+
+i:active,
+i:focus,
+*:active,
+*:focus  {
+    -moz-outline-style: none; 
+    outline-style: none;
+    outline:0;
+} 

@@ -1,7 +1,7 @@
-import '../styles/ReactMusicPlayerFloat.scss'
+import '../styles/MusicPlayer.scss'
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
-import { YOUTUBE_CONSTS } from '../constants'
+import { YOUTUBE_CONSTS } from '../utils/constants'
 
 class ReactMusicPlayerFloat extends Component {
 
@@ -21,6 +21,7 @@ class ReactMusicPlayerFloat extends Component {
   shouldComponentUpdate (nextProps, nextState) {
     if ((this.props.song !== null &&
          this.props.song !== nextProps.song) ||
+        (this.props.isPlay !== nextProps.isPlay) ||
          this.state !== nextState) {
       return true
     } else {
@@ -29,17 +30,17 @@ class ReactMusicPlayerFloat extends Component {
   }
 
   play = () => {
-    this.setState({ play: true, btnTypePlay : 'pause' })
+   // this.setState({ play: true, btnTypePlay : 'pause' })
     this.props.play()
   }
 
   pause = () => {
-    this.setState({ play: false, btnTypePlay : 'play_arrow' })
+   // this.setState({ play: false, btnTypePlay : 'play_arrow' })
     this.props.pause()
   }
 
   toggle = () => {
-    this.state.play ? this.pause() : this.play()
+    this.props.isPlay ? this.pause() : this.play()
   }
 
   end = () => {
@@ -97,8 +98,8 @@ class ReactMusicPlayerFloat extends Component {
         {this.setSource('LOCAL')}
 
         <div className='player-sub-container'>
-          <img className='player-cover' src={song.artists === 'Youtube' ?
-          song.albumCover : 'data:image/png;base64,' + song.albumCover} />
+          <img className='player-cover' src={song.artists === 'Youtube'
+           ? song.albumCover : 'data:image/png;base64,' + song.albumCover} />
 
           <div className='artist-container'>
             <div className='artist-info'>
@@ -108,16 +109,13 @@ class ReactMusicPlayerFloat extends Component {
           </div>
 
           <div className='player-buttons' >
-
             <i className={skipClass} onClick={this.previous}>skip_previous</i>
             <i className='material-icons vertical-align player-btn play'
-              onClick={this.toggle}>{this.state.btnTypePlay}</i>
+              onClick={this.toggle}>{!this.props.isPlay ? 'play_arrow' : 'pause' }</i>
             <i className={skipClass} onClick={this.next}>skip_next</i>
-
           </div>
 
           <div className='player-options hidden-xs-down'>
-
             <i className={repeatClass} onClick={this.repeat}>loop</i>
             <i className={randomClass} onClick={this.randomize}>shuffle</i>
             <i className={volumeClass}
@@ -131,10 +129,15 @@ class ReactMusicPlayerFloat extends Component {
 }
 
 ReactMusicPlayerFloat.propTypes = {
-  autoplay: PropTypes.bool,
-  songs: PropTypes.array.isRequired,
-  setActiveSong: PropTypes.func.isRequired,
-  activeSong: PropTypes.object
+  play: PropTypes.func.isRequired,
+  pause: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
+  previous: PropTypes.func.isRequired,
+  mute: PropTypes.func.isRequired,
+  repeat: PropTypes.func.isRequired,
+  random: PropTypes.func.isRequired,
+  song: PropTypes.object.isRequired,
+  isPlay: PropTypes.bool.isRequired
 }
 
 export default ReactMusicPlayerFloat

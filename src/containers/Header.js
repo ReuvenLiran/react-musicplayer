@@ -1,26 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import Header from '../components/Header'
 import { connect } from 'react-redux'
+import axios from 'axios'
+import { ROOT_URL_API } from '../utils/constants'
 import { getAutocomplete, fetchSearchResults, fetchSearchResultsSuccess,
          fetchSearchResultsFailure, setActiveSong } from '../actions/songs'
-/*
-class HeaderContainer extends Component {
-
-  componentDidMount () {
-    $(ReactDOM.findDOMNode(this.refs.searchInput)).autocomplete({
-      data: {
-        'Apple': null,
-        'Microsoft': null,
-        'Google': 'http://placehold.it/250x250'
-      }
-    })
-  }
-
-  render () {
-    <Header />
-  }
-
-} */
 
 const mapStateToProps = (state) => {
   return {
@@ -47,7 +31,6 @@ const mapDispatchToProps = (dispatch) => {
         }
       })
     }
-
   }
 }
 
@@ -56,56 +39,88 @@ class HeaderContainer extends Component {
   componentWillMount () {
     this.state = {
       searchQuery : '',
-      inputFocus : false
+      searchState : false,
+      autocompleteList: []
     }
   }
-/*
-  componentWillUpdate (props, state) {
-    if (props.searchList !== undefined) {
-      if (props.searchList.loading !== true) {
-        this.props.onSearch(props.searchList)
-      }
-    }
-  } */
 
   handleBlur = (e) => {
-    this.setState({ inputFocus : false, searchButtonIcon: 'search' })
+    e.preventDefault()
   }
 
   handleFocus = (e) => {
-    this.setState({ inputFocus : true, searchButtonIcon: 'close' })
-    console.log('wwwwww')
+    this.setState({ searchState : 'open', searchButtonIcon: 'close' })
   }
 
   handleChange = (e) => {
-    let isOptionSelected = false
+    let q = e.target.value
+    if (q === '') {
+      this.setState({ searchQuery: q })
+    } else {
+      this.getAutocomplete(q).then((response) => {
+        this.setState({
+          searchQuery: q, autocompleteList: response.data
+        })
+      })
+    }
+  }
 
-    this.props.autocompleteList.map((q) => {
-      if (q === e.target.value) {
-        isOptionSelected = true
-      }
+  handleClose = (e) => {
+    this.setState({ searchState : 'close',
+      searchButtonIcon: 'search'
     })
-
-    if (isOptionSelected === false) this.props.getAutocomplete(e.target.value)
-
-    this.setState({
-      searchQuery: e.target.value
-    })
+  }
+  handleSelectQuery = (e) => {
+    if (e.target.className === 'icon-update-query') {
+      let target = e.target.parentNode
+      let q = this.state.autocompleteList[target.id]
+      this.getAutocomplete(q).then((response) => {
+        this.setState({
+          searchQuery: q, autocompleteList: response.data
+        })
+      })
+    } else {
+      let target = e.target.nodeName === 'SPAN' ? e.target.parentNode : e.target
+      this.setState({ searchState: 'close', searchButtonIcon: 'search' })
+      this.props.searchSongs(this.state.autocompleteList[target.id])
+    }
   }
 
   handleClickSearch = (e) => {
-    this.props.searchSongs(this.state.searchQuery)
-     // this.refs.inputSearch.blur()
+    this.setState({ searchState : 'open',
+      searchQuery: '',
+      autocompleteList: [] })
+  }
+
+  getAutocomplete = (q) => {
+    const request = axios({
+      method: 'get',
+      params: { q: q },
+      url: `${ROOT_URL_API}/autocomplete`,
+      headers: []
+    })
+
+    return request
   }
 
   render () {
     return (
-      <Header onBlur={this.handleBlur} onFocus={this.handleFocus}
-        onChange={this.handleChange} searchQuery={this.state.searchQuery}
-        inputFocus={this.state.inputFocus} onSearch={this.handleClickSearch}
-        autocompleteList={this.props.autocompleteList}/>
+      <Header onBlur={this.handleBlur}
+        onFocus={this.handleFocus}
+        onChange={this.handleChange}
+        searchQuery={this.state.searchQuery}
+        searchState={this.state.searchState}
+        onClickSearch={this.handleClickSearch}
+        autocompleteList={this.state.autocompleteList}
+        onSelect={this.handleSelectQuery}
+        onClose={this.handleClose} />
     )
   }
 }
 
+HeaderContainer.propTypes = {
+  autocompleteList: PropTypes.array.isRequired,
+  getAutocomplete: PropTypes.func.isRequired,
+  searchSongs: PropTypes.func.isRequired
+}
 export default connect(mapStateToProps, mapDispatchToProps)(HeaderContainer)
