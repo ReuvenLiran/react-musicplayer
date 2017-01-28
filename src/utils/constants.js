@@ -1,7 +1,7 @@
 const PORT = '6882'
 const ROOT =
-      location.href.indexOf('localhost') > 0 ? 'http://localhost:' : 'http://192.168.5.102:'
-export const ROOT_URL = ROOT + PORT + '/'
+      location.href.indexOf('reuvenliran') > 0 ? 'http://reuvenliran.hopto.org:' : location.href
+export const ROOT_URL = ROOT.indexOf('8080') ? ROOT.replace('8080', PORT) : ROOT + PORT + '/'
 export const ROOT_URL_API = ROOT_URL + 'api'
 export const YOUTUBE_CONSTS = {
   YOUTUBE: 'Youtube',
